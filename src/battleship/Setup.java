@@ -33,9 +33,10 @@ public class Setup {
 			
 			boolean shipPlaced = false;
 			
+			
 			while (! shipPlaced) {
 			
-					
+				boolean isFree = true;
 				Random r = new Random();
 				int x = 0;
 				int y = 0;
@@ -51,47 +52,47 @@ public class Setup {
 						
 						if((myField.getState(x + i, y) == Field.States.NEAR_SHIP) ||
 								(myField.getState(x + i, y) == Field.States.SHIP)) {
-							
-					
+							isFree = false;
 							break;
 						}
 						
 					}
 					
-					s.setPosition(new int[]{x, y});
-						for(int i = 0; i < s.getSize(); i++){
-								myField.setState(x + i, y, Field.States.SHIP);
-								System.out.println("Ship" + (x + i) + " " + y );
-						}
-						shipPlaced = true;
-						makeShipPerimeter(s, myField);
-					
+					if (isFree) {
+						s.setPosition(new int[]{x, y});
+							for(int i = 0; i < s.getSize(); i++){
+									myField.setState(x + i, y, Field.States.SHIP);
+									System.out.println("Ship" + (x + i) + " " + y );
+							}
+							shipPlaced = true;
+							makeShipPerimeter(s, myField);
+					}
 					
 		
 				}
 				if(s.getCourse() == Course.VERTICAL){
 					x = r.nextInt(Field.SIZE);
 					y = r.nextInt(Field.SIZE - s.getSize() + 1);
-					s.setPosition(new int[]{x, y});
-					
+										
 					for(int i = 0; i < s.getSize(); i++){
 						
 						if((myField.getState(x, y + i) == Field.States.NEAR_SHIP) ||
 								(myField.getState(x, y + i) == Field.States.SHIP)) {
-
+							isFree = false;
 							break;
 						}
 						
 					}
 					
-
+					if (isFree) {
+						s.setPosition(new int[]{x, y});
 						for(int i = 0; i < s.getSize(); i++){
 							myField.setState(x, y + i, Field.States.SHIP);
 							System.out.println("Ship" + (x + i) + " " + y );
 						}
 						shipPlaced = true;
 						makeShipPerimeter(s, myField);
-
+					}
 				}
 			
 			
@@ -114,43 +115,77 @@ public class Setup {
 	}
 	
 	public void makeShipPerimeter(Ship s, Field f) {
+		
+		int x = s.getPosition()[0];
+		int y =s.getPosition()[1];
+		
 		if (s.getCourse() == Ship.Course.HORIZONTAL) {
-			if (s.getPosition()[0] != 0 ){
-				f.setState(s.getPosition()[0] - 1, s.getPosition()[1], Field.States.NEAR_SHIP);
+			if (x != 0 ){
+				f.setState(x - 1, y, Field.States.NEAR_SHIP);
+				if (y != 0) {
+					f.setState(x - 1, y - 1, Field.States.NEAR_SHIP);
+				}
+				if (y != (Field.SIZE - 1)) {
+					f.setState(x - 1, y + 1, Field.States.NEAR_SHIP);
+				}
+				
 			} 
-			if (s.getPosition()[0] + s.getSize() < Field.SIZE - 1 ){
-				f.setState(s.getPosition()[0] + s.getSize(), s.getPosition()[1], Field.States.NEAR_SHIP);
+			if (x + s.getSize() < Field.SIZE - 1 ){
+				f.setState(x + s.getSize(), y, Field.States.NEAR_SHIP);
+				
+				if (y != 0) {
+					f.setState(x + s.getSize(), y - 1, Field.States.NEAR_SHIP);
+				}
+				if (y != (Field.SIZE - 1)) {
+					f.setState(x + s.getSize(), y + 1, Field.States.NEAR_SHIP);
+				}
 			} 
 			
 			for(int i = 0; i < s.getSize(); i++){
-				if (s.getPosition()[1] != 0 ){
-					f.setState(s.getPosition()[0] + i, s.getPosition()[1] - 1, Field.States.NEAR_SHIP);
+				if (y != 0 ){
+					f.setState(x + i, y - 1, Field.States.NEAR_SHIP);
 				}
 				
-				if (s.getPosition()[1] != (Field.SIZE - 1) ){
-					f.setState(s.getPosition()[0] + i, s.getPosition()[1] + 1, Field.States.NEAR_SHIP);
+				if (y != (Field.SIZE - 1) ){
+					f.setState(x + i, y + 1, Field.States.NEAR_SHIP);
 				}
 			}
-			System.out.println("h--- " + (s.getPosition()[0] + 1));
+//			System.out.println("h--- " + (s.getPosition()[0] + 1));
 			
 		}
 		
 		if (s.getCourse() == Ship.Course.VERTICAL) {
-			if (s.getPosition()[1] != 0 ){
-				f.setState(s.getPosition()[0], s.getPosition()[1] - 1, Field.States.NEAR_SHIP);
+			if (y != 0 ){
+				f.setState(x, y - 1, Field.States.NEAR_SHIP);
+				
+				if (x != 0) {
+					f.setState(x - 1, y - 1, Field.States.NEAR_SHIP);
+				}
+				if (x != (Field.SIZE - 1)) {
+					f.setState(x + 1, y - 1, Field.States.NEAR_SHIP);
+				}
+				
 			} 
-			if (s.getPosition()[1] + s.getSize() < Field.SIZE - 1 ){
-				f.setState(s.getPosition()[0], s.getPosition()[1] + s.getSize(), Field.States.NEAR_SHIP);
+			if (y + s.getSize() < Field.SIZE - 1 ){
+				f.setState(x, y + s.getSize(), Field.States.NEAR_SHIP);
+				
+				if (x != 0) {
+					f.setState(x - 1, y + s.getSize(), Field.States.NEAR_SHIP);
+				}
+				if (x != (Field.SIZE - 1)) {
+					f.setState(x + 1, y + s.getSize(), Field.States.NEAR_SHIP);
+				}
+				
 			} 
 			
 			for(int i = 0; i < s.getSize(); i++){
-				if (s.getPosition()[0] != 0 ){
-					f.setState(s.getPosition()[0] - 1, s.getPosition()[1] + i, Field.States.NEAR_SHIP);
+				if (x != 0 ){
+					f.setState(x - 1, y + i, Field.States.NEAR_SHIP);
 				}
 				
 				if (s.getPosition()[0] != (Field.SIZE - 1) ){
-					f.setState(s.getPosition()[0] + 1, s.getPosition()[1] + i, Field.States.NEAR_SHIP);
-					System.out.println("v--- " + (s.getPosition()[0] + 1));
+					f.setState(x + 1, y + i, Field.States.NEAR_SHIP);
+//					System.out.println("v--- " + (s.getPosition()[0] + 1));
 				}
 			}
 		}
