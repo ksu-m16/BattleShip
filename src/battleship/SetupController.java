@@ -1,29 +1,28 @@
 package battleship;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import model.ClassicFleet;
-import model.IField;
+import model.IFieldModel;
 import model.Ship;
 
 public class SetupController {
 
-	private IField f;
+	private IFieldModel fieldModel1;
+	private IFieldModel fieldModel2;
 	private ISetupStrategy ss;
 
-	public void setField(IField f) {
-		this.f = f;
+	IFieldModel getFieldModel1(){
+		return fieldModel1;
 	}
-
+	IFieldModel getFieldModel2(){
+		return fieldModel2;
+	}
+	
 	public void setSetupStrategy(ISetupStrategy s) {
 		this.ss = s;
 	}
 
-	public List<Ship> getListOfShips() {
-		ss = new SetupStrategy(f);
-		ArrayList<Integer> shipsDescription = new ClassicFleet()
-				.getShipsDescription();
-		return ss.getListOfShips(shipsDescription);
+	public List<Ship> getShips() {
+		return ss.getShips();
 	}
 }

@@ -1,8 +1,10 @@
 package model;
 
-public class Field implements IField {
+import java.util.List;
 
-	public Field() {
+public class FieldModel implements IFieldModel {
+
+	public FieldModel() {
 		// fleet = new ArrayList<Ship>();
 		states = new State[XSIZE][YSIZE];
 		for (int i = 0; i < states[0].length; i++) {
@@ -13,30 +15,10 @@ public class Field implements IField {
 
 	}
 
-	public boolean tryPlace(int x, int y) {
-		switch (getState(x, y)) {
-		case EMPTY:
-			return true;
-		default:
-			return false;
-		}
-	}
+
 
 	public final static int XSIZE = 10;
 	public final static int YSIZE = 10;
-
-	public enum State {
-		EMPTY("0"), SHIP("P"), NEAR_SHIP("V"), HIT(":"), HIT_SHIP("X");
-		private String symbol;
-
-		State(String symbol) {
-			this.symbol = symbol;
-		}
-
-		public String toString() {
-			return symbol;
-		}
-	}
 
 	private State[][] states;
 
@@ -66,5 +48,17 @@ public class Field implements IField {
 			}
 			System.out.println();
 		}
+	}
+
+	@Override
+	public State attack(int x, int y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<IShipState> getShipStates() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

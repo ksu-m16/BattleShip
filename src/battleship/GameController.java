@@ -20,5 +20,19 @@ public class GameController {
 			str2.move();
 		}
 		return !gameOver;
+		
+
+//	      int current = 0;
+//	      Strategy st = new Strategy[2];
+//		public boolean next(){
+//	            Strategy s = st[current];
+//	            Move m = s.move();
+//	            //Update model here
+//			s.update(//some result);    
+//	            current = (current + 1) % 2;
+//			return !gameOver;
+
+		
+		
 	}
 }

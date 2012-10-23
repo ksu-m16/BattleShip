@@ -1,6 +1,6 @@
 package battleship;
 
-import model.Field;
+import model.FieldModel;
 
 public class Strategy {
 

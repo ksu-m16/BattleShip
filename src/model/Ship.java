@@ -14,7 +14,7 @@ public class Ship {
 		HORIZONTAL, VERTICAL
 	};
 
-	private ArrayList<Field.State> state;
+	private ArrayList<State> state;
 
 	public static Ship createShip(int x, int y, int size, Course course) {
 		Ship s = new Ship();
@@ -22,7 +22,7 @@ public class Ship {
 		s.size = size;
 		s.course = course;
 		for (int i = size; i < 0; i++) {
-			s.state.add(Field.State.SHIP);
+			s.state.add(State.SHIP);
 		}
 		return s;
 	}
@@ -35,11 +35,11 @@ public class Ship {
 		return size;
 	}
 
-	public ArrayList<Field.State> getState() {
+	public ArrayList<State> getState() {
 		return state;
 	}
 
-	public void setState(ArrayList<Field.State> state) {
+	public void setState(ArrayList<State> state) {
 		this.state = state;
 	}
 
@@ -48,8 +48,8 @@ public class Ship {
 	}
 
 	public boolean isHit() {
-		for (Field.State st : state) {
-			if (st == Field.State.HIT) {
+		for (State st : state) {
+			if (st == State.HIT) {
 				return true;
 			}
 		}
@@ -58,8 +58,8 @@ public class Ship {
 
 	public boolean isDead() {
 		boolean dead = true;
-		for (Field.State st : state) {
-			dead = dead && (st == Field.State.HIT);
+		for (State st : state) {
+			dead = dead && (st == State.HIT);
 
 		}
 		return dead;

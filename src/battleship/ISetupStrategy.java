@@ -6,5 +6,7 @@ import java.util.List;
 import model.Ship;
 
 public interface ISetupStrategy {
-	List<Ship> getListOfShips(ArrayList<Integer> shipsDescription);
+//	List<Ship> getShips(ArrayList<Integer> shipsDescription);
+	List<Ship> getShips();
+	
 }
