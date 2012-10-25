@@ -1,7 +1,7 @@
 package model;
 
 public enum State {
-	EMPTY("0"), SHIP("P"), NEAR_SHIP("V"), HIT(":"), HIT_SHIP("X");
+	EMPTY("0"), SHIP("P"), NEAR_SHIP("V"), MISS(":"), HIT("X");
 	private String symbol;
 
 	State(String symbol) {

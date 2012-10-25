@@ -2,32 +2,58 @@ package model;
 
 import java.util.List;
 
-public class ShipState implements IShipState{
+public class ShipState implements IShipState {
 
-	private List<IPoint> position;
-	
+	private IShipDescription sd;
+	private List<State> state;
+
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		return state.size();
 	}
 
 	@Override
 	public boolean isKilled() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean dead = true;
+		for (State st : state) {
+			dead = dead && (st == State.MISS);
+
+		}
+		return dead;
 	}
 
 	@Override
 	public boolean isHit() {
-		// TODO Auto-generated method stub
+		for (State st : state) {
+			if (st == State.MISS) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public double getLiveStatus() {
-		// TODO Auto-generated method stub
-		return 0;
+		int nhit = 0;
+		for (State st : state) {
+			if (st == State.MISS) {
+				return nhit++;
+			}
+		}
+		return ((state.size() - nhit) * 100 / state.size());
+	}
+	
+	public boolean attack(int x, int y) {
+		List<IPoint> position = sd.getPosition();
+//		for (IPoint p: position) {
+		for (int i = 0; i < position.size(); i++) {
+			if ((position.get(i).getX() == x) && (position.get(i).getY() == y)) {
+				state.set(i, State.HIT);
+				return true;
+			}
+		}
+		return false;
+		
 	}
 
 }

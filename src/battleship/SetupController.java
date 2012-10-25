@@ -3,26 +3,60 @@ package battleship;
 import java.util.List;
 
 import model.IFieldModel;
-import model.Ship;
+import model.IShipDescription;
+import model.ShipDescription;
 
 public class SetupController {
 
 	private IFieldModel fieldModel1;
 	private IFieldModel fieldModel2;
-	private ISetupStrategy ss;
+	private ISetupStrategy ss1;
+	
+	public ISetupStrategy getSs1() {
+		return ss1;
+	}
 
-	IFieldModel getFieldModel1(){
+	public ISetupStrategy getSs2() {
+		return ss2;
+	}
+
+	private ISetupStrategy ss2;
+
+	public IFieldModel getFieldModel1() {
 		return fieldModel1;
 	}
-	IFieldModel getFieldModel2(){
+
+	public IFieldModel getFieldModel2() {
 		return fieldModel2;
 	}
 	
-	public void setSetupStrategy(ISetupStrategy s) {
-		this.ss = s;
+	public void setFieldModel1(IFieldModel fieldModel1) {
+		this.fieldModel1 = fieldModel1;
 	}
 
-	public List<Ship> getShips() {
+	public void setFieldModel2(IFieldModel fieldModel2) {
+		this.fieldModel2 = fieldModel2;
+	}
+
+	public void setSetupStrategy1(ISetupStrategy ss) {
+		this.ss1 = ss;
+	}
+	
+	public void setSetupStrategy2(ISetupStrategy ss) {
+		this.ss2 = ss;
+	}
+
+	public ISetupStrategy getSetupStrategy1() {
+		return ss1;
+	}
+
+	public ISetupStrategy getSetupStrategy2() {
+		return ss2;
+	}
+	
+	public List<IShipDescription> getShips(ISetupStrategy ss) {
 		return ss.getShips();
 	}
+	
+
 }

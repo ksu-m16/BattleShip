@@ -2,23 +2,35 @@ package model;
 
 import java.util.List;
 
+import battleship.GameDescription;
+import battleship.ISetupStrategy;
+import battleship.SetupHelper;
+
 public class FieldModel implements IFieldModel {
-
-	public FieldModel() {
-		// fleet = new ArrayList<Ship>();
-		states = new State[XSIZE][YSIZE];
-		for (int i = 0; i < states[0].length; i++) {
-			for (int j = 0; j < states[0].length; j++) {
-				states[i][j] = State.EMPTY;
-			}
-		}
-
+	private FieldModel() {
+//		init();
 	}
 
+	public static IFieldModel getFieldModel(List<IShipDescription> ships){
+		FieldModel m = new FieldModel();
+		m.init(ships);
+		return (IFieldModel)m;
+	}
+	
+//	public FieldModel() {
+//		// fleet = new ArrayList<Ship>();
+//		states = new State[GameDescription.XMAX][GameDescription.YMAX];
+//		for (int i = 0; i < states[0].length; i++) {
+//			for (int j = 0; j < states[0].length; j++) {
+//				states[i][j] = State.EMPTY;
+//			}
+//		}
+//
+//	}
+
+	private List<IShipState> shipStates;
 
 
-	public final static int XSIZE = 10;
-	public final static int YSIZE = 10;
 
 	private State[][] states;
 
@@ -29,16 +41,10 @@ public class FieldModel implements IFieldModel {
 	// }
 
 	public State getState(int x, int y) {
-		if (x < 0 || y < 0 || x >= XSIZE || y >= YSIZE) {
+		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
 			return State.EMPTY;
 		}
 		return states[x][y];
-	}
-
-	public void setState(int x, int y, State st) {
-		if ((x >= 0 && x < XSIZE) && (y >= 0 && y < YSIZE)) {
-			states[x][y] = st;
-		}
 	}
 
 	public void printField() {
@@ -52,13 +58,37 @@ public class FieldModel implements IFieldModel {
 
 	@Override
 	public State attack(int x, int y) {
-		// TODO Auto-generated method stub
-		return null;
+		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
+			return State.EMPTY;
+		}
+		if (getState(x, y) == State.SHIP) {
+			states[x][y] = State.HIT;
+			return State.HIT;
+		}
+		states[x][y] = State.MISS;
+		return State.MISS;
 	}
 
 	@Override
 	public List<IShipState> getShipStates() {
 		// TODO Auto-generated method stub
-		return null;
+		return shipStates;
 	}
+
+	private void init(List<IShipDescription> ships) throws IllegalArgumentException {
+		states = new State[GameDescription.XMAX][GameDescription.YMAX];
+		for (int i = 0; i < states[0].length; i++) {
+			for (int j = 0; j < states[0].length; j++) {
+				states[i][j] = State.EMPTY;
+			}
+		}
+		for (IShipDescription s: ships) {
+			if (!SetupHelper.checkShipPlacement(s, states)) {
+				throw new IllegalArgumentException("Illegal ship position!");
+			}
+			
+		}
+	}
+	
+			
 }

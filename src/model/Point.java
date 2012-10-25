@@ -1,19 +1,20 @@
 package model;
 
-public class Point implements IPoint{
-	
+public class Point implements IPoint {
+
 	public Point(int x, int y) {
 		this.x = x;
-		this.y = y;		
+		this.y = y;
 	}
-	
+
 	private int x;
 	private int y;
-	
-	public int getX(){
+
+	public int getX() {
 		return x;
 	}
-	public int getY(){
+
+	public int getY() {
 		return y;
 	}
 }

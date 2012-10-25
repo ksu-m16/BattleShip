@@ -6,26 +6,34 @@ import java.util.Random;
 
 import model.FieldModel;
 import model.IFieldModel;
-import model.Ship;
-import model.Ship.Course;
+import model.IPoint;
+import model.IShipDescription;
+import model.Point;
+import model.ShipDescription;
+import model.ShipDescription.Course;
 import model.State;
 
 public class SetupStrategy implements ISetupStrategy {
 
-	IFieldModel field;
-
-	SetupStrategy(IFieldModel field) {
-		this.field = field;
-	}
+	private State[][] field;
 
 	@Override
-	public List<Ship> getShips() {
+	public List<IShipDescription> getShips() {
+		System.out.println("SetupStrategy.getShips()");
 
-		ArrayList<Integer> shipsDescription = getShipsDescription();
-		List<Ship> listOfShips = new ArrayList<Ship>();
+		field = new State[GameDescription.XMAX][GameDescription.YMAX];
+		for (int i = 0; i < GameDescription.XMAX; i++) {
+			for (int j = 0; j < GameDescription.YMAX; j++) {
+				field[i][j] = State.EMPTY;
+			}
+		}
 
-		for (Integer shipSize : shipsDescription) {
+		ArrayList<Integer> shipsSizes = getShipsSizes();
 
+		List<IShipDescription> listOfShips = new ArrayList<IShipDescription>();
+
+		for (Integer shipSize : shipsSizes) {
+			System.out.println("size " + shipSize);
 			boolean shipCanBePlaced = false;
 
 			while (!shipCanBePlaced) {
@@ -36,28 +44,29 @@ public class SetupStrategy implements ISetupStrategy {
 
 				// Course is random, too. 42 is meaning of life, the universe
 				// and everything.
-				Ship.Course course = r.nextInt(42) < 21 ? Ship.Course.HORIZONTAL
-						: Ship.Course.VERTICAL;
+				Course course = r.nextInt(42) < 21 ? Course.HORIZONTAL
+						: Course.VERTICAL;
 
 				if (course == Course.HORIZONTAL) {
-					x = r.nextInt(FieldModel.XSIZE - shipSize + 1);
-					y = r.nextInt(FieldModel.YSIZE);
+					x = r.nextInt(field.length - shipSize + 1);
+					y = r.nextInt(field[0].length);
+				}
 
-					if (course == Course.VERTICAL) {
-						x = r.nextInt(FieldModel.XSIZE);
-						y = r.nextInt(FieldModel.YSIZE - shipSize + 1);
-					}
-					Ship s = Ship.createShip(x, y, shipSize, course);
-					if (tryToPlaceShip(s)) {
-						shipCanBePlaced = true;
-						listOfShips.add(s);
-						System.out.println("ship placed:" + s.getSize());
-						placeShip(s);
-						makePerimeter(s);
-						field.printField();
-						System.out.println("-----------------");
-					}
+				if (course == Course.VERTICAL) {
+					x = r.nextInt(field.length);
+					y = r.nextInt(field[0].length - shipSize + 1);
+				}
+				
+				IShipDescription s = new ShipDescription(new Point(x, y), shipSize,course);
 
+				if (SetupHelper.checkShipPlacement(s, field)) {
+					shipCanBePlaced = true;
+					listOfShips.add(s);
+					System.out.println("ship placed:" + s.getPosition().size());
+					placeShip(s);
+					makePerimeter(s);
+					printField();
+					System.out.println("-----------------");
 				}
 
 			}
@@ -67,97 +76,35 @@ public class SetupStrategy implements ISetupStrategy {
 		return listOfShips;
 	}
 
-	private int[][] getShipCoords(Ship s) {
-		int[][] shipCoords = new int[s.getSize()][2];
-		int x = s.getPosition()[0];
-		int y = s.getPosition()[1];
-		switch (s.getCourse()) {
-		case HORIZONTAL: {
-			for (int i = 0; i < s.getSize(); i++) {
-				shipCoords[i] = new int[] { x + i, y };
-			}
-			break;
-
-		}
-		case VERTICAL: {
-			for (int i = 0; i < s.getSize(); i++) {
-				shipCoords[i] = new int[] { x, y + i };
-			}
-		}
-		}
-		return shipCoords;
-	}
-
-	public boolean tryPlace(int x, int y) {
-		switch (getState(x, y)) {
-		case EMPTY:
-			return true;
-		default:
-			return false;
+	private void placeShip(IShipDescription s) {
+		List<IPoint> position = s.getPosition();
+		for (IPoint p : position) {
+			field[p.getX()][p.getY()] = State.SHIP;
+			System.out.println("x: " + p.getX() + " y: " + p.getY());
 		}
 	}
-	
-	
-	private boolean trySector(int x, int y) {
-		if (field.getState(x, y) != State.EMPTY) {
-			return false;
-		}
 
+	private void makePerimeter(IShipDescription s) {
+		List<IPoint> position = s.getPosition();
+		for (IPoint p : position) {
+			makePerimeter(p);
+		}
+	}
+
+	private void makePerimeter(IPoint p) {
+		int x = p.getX();
+		int y = p.getY();
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				if (field.getState(x - 1 + i, y - 1 + j) == State.EMPTY) {
-					continue;
-				}
-				if (field.getState(x - 1 + i, y - 1 + j) == State.NEAR_SHIP) {
-					continue;
-				}
-				return false;
-			}
-
-		}
-		return true;
-	}
-
-	private boolean tryToPlaceShip(Ship s) {
-		int[][] shipCoords = getShipCoords(s);
-		for (int i = 0; i < s.getSize(); i++) {
-			if (!trySector(shipCoords[i][0], shipCoords[i][1])) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private void placeShip(Ship s) {
-		int[][] shipCoords = getShipCoords(s);
-		for (int i = 0; i < s.getSize(); i++) {
-			field.setState(shipCoords[i][0], shipCoords[i][1], State.SHIP);
-			System.out.println("x: " + shipCoords[i][0] + " y: "
-					+ shipCoords[i][1]);
-		}
-	}
-
-	private void makePerimeter(Ship s) {
-		int[][] shipCoords = getShipCoords(s);
-		for (int i = 0; i < s.getSize(); i++) {
-			makePerimeter(shipCoords[i][0], shipCoords[i][1]);
-		}
-
-	}
-
-	private void makePerimeter(int x, int y) {
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				if (field.getState(x - 1 + i, y - 1 + j) == State.EMPTY) {
-					field.setState(x - 1 + i, y - 1 + j, State.NEAR_SHIP);
+				if (getAt(x - 1 + i, y - 1 + j) == State.EMPTY) {
+					setAt(x - 1 + i, y - 1 + j, State.NEAR_SHIP);
 				}
 			}
 		}
 	}
-	
-	
-	//returns 1x 4-point ship, 2x 3-point, 3x 2-point, 4x 1-point.
-	public ArrayList<Integer> getShipsDescription() {
+
+	// returns 1x 4-point ship, 2x 3-point, 3x 2-point, 4x 1-point.
+	public ArrayList<Integer> getShipsSizes() {
 		int maxsize = 4;
 		int numberOfShips = 10;
 		ArrayList<Integer> fleet = new ArrayList<Integer>();
@@ -171,8 +118,31 @@ public class SetupStrategy implements ISetupStrategy {
 			}
 		}
 		return fleet;
-	
+
+	}
+
+	private State getAt(int x, int y) {
+		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
+			return State.EMPTY;
+		}
+		return field[x][y];
 	}
 	
+	private void setAt(int x, int y, State st) {
+		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
+			return;
+		}
+		field[x][y] = st;
+		
+	}
+	
+	private void printField() {
+		for (int j = 0; j < field.length; j++) {
+			for (int i = 0; i < field.length; i++) {
+				System.out.print(field[i][j]);
+			}
+			System.out.println();
+		}
+	}
 
 }

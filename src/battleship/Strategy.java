@@ -6,7 +6,7 @@ public class Strategy {
 
 	public void move() {
 		// TODO Auto-generated method stub
-		
+
 	}
-//	Field myField = new Field();
+	// Field myField = new Field();
 }
