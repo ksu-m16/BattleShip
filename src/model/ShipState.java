@@ -1,15 +1,21 @@
 package model;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ShipState implements IShipState {
-
+	public ShipState (IShipDescription sd) {
+		this.sd = sd;
+		state = new State[sd.getSize()];
+		Arrays.fill(state, State.SHIP);
+	}
+	
 	private IShipDescription sd;
-	private List<State> state;
+	private State[] state;
 
 	@Override
 	public int getSize() {
-		return state.size();
+		return state.length;
 	}
 
 	@Override
@@ -17,7 +23,6 @@ public class ShipState implements IShipState {
 		boolean dead = true;
 		for (State st : state) {
 			dead = dead && (st == State.MISS);
-
 		}
 		return dead;
 	}
@@ -40,15 +45,16 @@ public class ShipState implements IShipState {
 				return nhit++;
 			}
 		}
-		return ((state.size() - nhit) * 100 / state.size());
+		return ((state.length - nhit) * 100 / state.length);
 	}
+	
 	
 	public boolean attack(int x, int y) {
 		List<IPoint> position = sd.getPosition();
 //		for (IPoint p: position) {
 		for (int i = 0; i < position.size(); i++) {
 			if ((position.get(i).getX() == x) && (position.get(i).getY() == y)) {
-				state.set(i, State.HIT);
+				state[i] = State.HIT;
 				return true;
 			}
 		}

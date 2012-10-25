@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import battleship.GameDescription;
@@ -14,31 +16,13 @@ public class FieldModel implements IFieldModel {
 	public static IFieldModel getFieldModel(List<IShipDescription> ships){
 		FieldModel m = new FieldModel();
 		m.init(ships);
-		return (IFieldModel)m;
+		m.printField();
+		return m;
 	}
 	
-//	public FieldModel() {
-//		// fleet = new ArrayList<Ship>();
-//		states = new State[GameDescription.XMAX][GameDescription.YMAX];
-//		for (int i = 0; i < states[0].length; i++) {
-//			for (int j = 0; j < states[0].length; j++) {
-//				states[i][j] = State.EMPTY;
-//			}
-//		}
-//
-//	}
-
-	private List<IShipState> shipStates;
-
-
+	private List<ShipState> shipStates;
 
 	private State[][] states;
-
-	// private ArrayList <Ship> fleet;
-	//
-	// public ArrayList <Ship> getFleet() {
-	// return fleet;
-	// }
 
 	public State getState(int x, int y) {
 		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
@@ -61,32 +45,43 @@ public class FieldModel implements IFieldModel {
 		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
 			return State.EMPTY;
 		}
-		if (getState(x, y) == State.SHIP) {
-			states[x][y] = State.HIT;
-			return State.HIT;
+		if (states[x][y].getHitState() == State.HIT) {
+			for (ShipState s: shipStates) {
+				s.attack(x, y);
+			}
+			
 		}
-		states[x][y] = State.MISS;
-		return State.MISS;
+		
+		return states[x][y] = states[x][y].getHitState();
 	}
 
 	@Override
-	public List<IShipState> getShipStates() {
+	public List<? extends IShipState> getShipStates() {
 		// TODO Auto-generated method stub
 		return shipStates;
 	}
 
 	private void init(List<IShipDescription> ships) throws IllegalArgumentException {
 		states = new State[GameDescription.XMAX][GameDescription.YMAX];
+		shipStates = new ArrayList<ShipState>();
+		
 		for (int i = 0; i < states[0].length; i++) {
-			for (int j = 0; j < states[0].length; j++) {
-				states[i][j] = State.EMPTY;
-			}
+			Arrays.fill(states[i], State.EMPTY);
 		}
+		
 		for (IShipDescription s: ships) {
 			if (!SetupHelper.checkShipPlacement(s, states)) {
 				throw new IllegalArgumentException("Illegal ship position!");
 			}
-			
+			placeShip(s);
+			shipStates.add(new ShipState(s));
+		}
+	}
+	
+	private void placeShip(IShipDescription s) {
+		List<IPoint> position = s.getPosition();
+		for (IPoint p : position) {
+			states[p.getX()][p.getY()] = State.SHIP;
 		}
 	}
 	

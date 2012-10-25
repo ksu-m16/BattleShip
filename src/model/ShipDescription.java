@@ -12,6 +12,7 @@ public class ShipDescription implements IShipDescription {
 	
 	private IPoint position;
 	private int size;
+
 	private Course course;
 
 	public enum Course {
@@ -38,6 +39,10 @@ public class ShipDescription implements IShipDescription {
 		return positions;
 	}
 
+	public int getSize() {
+		return size;
+	}
+	
 //	public static ShipDescription createShip(int x, int y, int size,
 //			Course course) {
 //		ShipDescription s = new ShipDescription();

@@ -28,12 +28,11 @@ public class SetupStrategy implements ISetupStrategy {
 			}
 		}
 
-		ArrayList<Integer> shipsSizes = getShipsSizes();
+		int shipsSizes[] = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
 
 		List<IShipDescription> listOfShips = new ArrayList<IShipDescription>();
 
 		for (Integer shipSize : shipsSizes) {
-			System.out.println("size " + shipSize);
 			boolean shipCanBePlaced = false;
 
 			while (!shipCanBePlaced) {
@@ -62,11 +61,11 @@ public class SetupStrategy implements ISetupStrategy {
 				if (SetupHelper.checkShipPlacement(s, field)) {
 					shipCanBePlaced = true;
 					listOfShips.add(s);
-					System.out.println("ship placed:" + s.getPosition().size());
+//					System.out.println("ship placed:" + s.getPosition().size());
 					placeShip(s);
 					makePerimeter(s);
-					printField();
-					System.out.println("-----------------");
+//					printField();
+//					System.out.println("-----------------");
 				}
 
 			}
@@ -80,7 +79,7 @@ public class SetupStrategy implements ISetupStrategy {
 		List<IPoint> position = s.getPosition();
 		for (IPoint p : position) {
 			field[p.getX()][p.getY()] = State.SHIP;
-			System.out.println("x: " + p.getX() + " y: " + p.getY());
+//			System.out.println("x: " + p.getX() + " y: " + p.getY());
 		}
 	}
 
@@ -101,24 +100,6 @@ public class SetupStrategy implements ISetupStrategy {
 				}
 			}
 		}
-	}
-
-	// returns 1x 4-point ship, 2x 3-point, 3x 2-point, 4x 1-point.
-	public ArrayList<Integer> getShipsSizes() {
-		int maxsize = 4;
-		int numberOfShips = 10;
-		ArrayList<Integer> fleet = new ArrayList<Integer>();
-		int nships = 0;
-		for (int i = 0; i < numberOfShips; i++) {
-			fleet.add(maxsize);
-			nships++;
-			if ((nships + maxsize) == 5) {
-				maxsize--;
-				nships = 0;
-			}
-		}
-		return fleet;
-
 	}
 
 	private State getAt(int x, int y) {

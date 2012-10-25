@@ -11,4 +11,13 @@ public enum State {
 	public String toString() {
 		return symbol;
 	}
+	
+	public State getHitState() {
+		switch (this) {
+		case SHIP: return HIT;
+		case HIT: return HIT;
+		default: return MISS;
+		}
+		
+	}
 }
