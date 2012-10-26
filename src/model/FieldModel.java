@@ -20,7 +20,7 @@ public class FieldModel implements IFieldModel {
 		return m;
 	}
 	
-	private List<ShipState> shipStates;
+	private ArrayList<ShipState> shipStates;
 
 	private State[][] states;
 
@@ -47,18 +47,25 @@ public class FieldModel implements IFieldModel {
 		}
 		if (states[x][y].getHitState() == State.HIT) {
 			for (ShipState s: shipStates) {
-				s.attack(x, y);
+				if (! s.attack(x, y)){
+				continue;	
+				}
+				if (s.isKilled()) {
+					return State.KILLED;
+				}
+				break;
 			}
 			
 		}
-		
+	
 		return states[x][y] = states[x][y].getHitState();
 	}
 
 	@Override
 	public List<? extends IShipState> getShipStates() {
-		// TODO Auto-generated method stub
+//	public List<IShipState> getShipStates() {
 		return shipStates;
+//		return new ArrayList<IShipState>(shipStates);
 	}
 
 	private void init(List<IShipDescription> ships) throws IllegalArgumentException {

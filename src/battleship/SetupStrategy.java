@@ -19,7 +19,7 @@ public class SetupStrategy implements ISetupStrategy {
 
 	@Override
 	public List<IShipDescription> getShips() {
-		System.out.println("SetupStrategy.getShips()");
+//		System.out.println("SetupStrategy.getShips()");
 
 		field = new State[GameDescription.XMAX][GameDescription.YMAX];
 		for (int i = 0; i < GameDescription.XMAX; i++) {
@@ -96,7 +96,7 @@ public class SetupStrategy implements ISetupStrategy {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (getAt(x - 1 + i, y - 1 + j) == State.EMPTY) {
-					setAt(x - 1 + i, y - 1 + j, State.NEAR_SHIP);
+					setAt(x - 1 + i, y - 1 + j, State.FORBIDDEN);
 				}
 			}
 		}

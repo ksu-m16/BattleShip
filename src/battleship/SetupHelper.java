@@ -33,7 +33,7 @@ public class SetupHelper {
 				if (getAt(x - 1 + i, y - 1 + j, field) == State.EMPTY) {
 					continue;
 				}
-				if (getAt(x - 1 + i, y - 1 + j, field) == State.NEAR_SHIP) {
+				if (getAt(x - 1 + i, y - 1 + j, field) == State.FORBIDDEN) {
 					continue;
 				}
 				return false;

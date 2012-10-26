@@ -43,29 +43,4 @@ public class ShipDescription implements IShipDescription {
 		return size;
 	}
 	
-//	public static ShipDescription createShip(int x, int y, int size,
-//			Course course) {
-//		ShipDescription s = new ShipDescription();
-//		s.position = new ArrayList<IPoint>();
-//		// s.size = size;
-//		// s.course = course;
-//
-//		switch (course) {
-//		case HORIZONTAL: {
-//			for (int i = 0; i < size; i++) {
-//				s.position.add(new Point(x + i, y));
-//			}
-//			break;
-//
-//		}
-//		case VERTICAL: {
-//			for (int i = 0; i < size; i++) {
-//				s.position.add(new Point(x, y + i));
-//			}
-//		}
-//		}
-//
-//		return s;
-//	}
-
 }

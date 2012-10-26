@@ -1,14 +1,14 @@
 package battleship;
 
 public class GameController {
-	private Strategy str1, str2;
+	private XuStrategy str1, str2;
 	private boolean gameOver = false;
 
-	public void setStrategy1(Strategy str) {
+	public void setStrategy1(XuStrategy str) {
 		str1 = str;
 	}
 
-	public void setStrategy2(Strategy str) {
+	public void setStrategy2(XuStrategy str) {
 		str2 = str;
 	}
 
