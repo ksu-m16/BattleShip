@@ -16,7 +16,7 @@ public class FieldModel implements IFieldModel {
 	public static IFieldModel getFieldModel(List<IShipDescription> ships){
 		FieldModel m = new FieldModel();
 		m.init(ships);
-		m.printField();
+//		m.printField();
 		return m;
 	}
 	
@@ -51,11 +51,12 @@ public class FieldModel implements IFieldModel {
 				continue;	
 				}
 				if (s.isKilled()) {
+					System.out.println("model: killed");
 					return State.KILLED;
 				}
 				break;
 			}
-			
+
 		}
 	
 		return states[x][y] = states[x][y].getHitState();

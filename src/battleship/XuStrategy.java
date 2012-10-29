@@ -49,43 +49,54 @@ public class XuStrategy implements IStrategy {
 		}
 			
 		updateWhiteSpaceList();
+		
 		return fireRandom();
 		
 	}
 
 	private void updateWhiteSpaceList() {
-		ArrayList<IPoint> whiteSpace = new ArrayList<IPoint>();
+		whiteSpacesList = new HashMap<ArrayList<IPoint>, Integer>();
+		ArrayList<IPoint> whiteSpace; 
 		
 		//vertical
 		for (int i = 0; i < states.length; i++) {
+			whiteSpace = new ArrayList<IPoint>();
 			for (int j = 0; j < states[0].length; j++) {
 				if (states[i][j] == State.EMPTY) {
 					whiteSpace.add(new Point(i,j));
-					continue;
 				}
-				if (whiteSpace.size() > 0) {
+				
+				if (((states[i][j] == State.EMPTY) && (j == states[0].length - 1)) || 
+						((states[i][j] != State.EMPTY) && (whiteSpace.size() > 0))) {
+					
 					whiteSpacesList.put(whiteSpace, whiteSpace.size());
+//					System.out.println("row" + whiteSpace);
+
 					whiteSpace = new ArrayList<IPoint>();
 				}
 			}
-			whiteSpace = new ArrayList<IPoint>();
+
 		}
 		
-		whiteSpace = new ArrayList<IPoint>();
-		
 		//horizontal
+//		System.out.println("horizontal");
 		for (int j = 0; j < states[0].length; j++) {
+			whiteSpace = new ArrayList<IPoint>();
 			for (int i = 0; i < states.length; i++) {
 				if (states[i][j] == State.EMPTY) {
 					whiteSpace.add(new Point(i,j));
-					continue;
 				}
-				if (whiteSpace.size() > 0) {
+				
+				if (((states[i][j] == State.EMPTY) && (i == states.length - 1)) || 
+						((states[i][j] != State.EMPTY) && (whiteSpace.size() > 0))) {
+					
 					whiteSpacesList.put(whiteSpace, whiteSpace.size());
+//					System.out.println("column" + whiteSpace);
+
 					whiteSpace = new ArrayList<IPoint>();
 				}
 			}
-			whiteSpace = new ArrayList<IPoint>();
+			
 		}
 		
 	}
@@ -96,8 +107,10 @@ public class XuStrategy implements IStrategy {
 					fireHorizontal(currentVictim) : fireVertical(currentVictim);
 		}
 		if (isCourseHorisontal(currentVictim)) {
+			System.out.println("horizontal " + currentVictim);
 			return fireHorizontal(currentVictim);
 		}
+		System.out.println("vertical " + currentVictim);
 		return fireVertical(currentVictim);
 	}
 	
@@ -128,9 +141,10 @@ public class XuStrategy implements IStrategy {
 	}
 	
 	private IPoint fireRandom(){
-		Integer[] sizes = (Integer[])whiteSpacesList.values().toArray();
+		System.out.println(whiteSpacesList.size());
+		Object[] sizes = whiteSpacesList.values().toArray();
 		Arrays.sort(sizes);
-		int maxSize = sizes[sizes.length - 1];
+		int maxSize = (Integer)sizes[sizes.length - 1];
 
 		for (Map.Entry<ArrayList<IPoint>, Integer> whiteSpace: whiteSpacesList.entrySet()) {
 			if (whiteSpace.getValue() == maxSize) {
@@ -175,18 +189,24 @@ public class XuStrategy implements IStrategy {
 			currentVictim.add(point);
 			surroundCorpse(currentVictim);
 //			fleet.put(currentVictim.size(), (fleet.get(currentVictim.size()) - 1));
+			
+			System.out.println("killed! " + currentVictim);
+			
 			currentVictim = new ArrayList<IPoint>();
 //			lastMoveHit = false;
+
 			break;
 		}
 		case HIT: {
 			currentVictim.add(point);
+			System.out.println("hit! " + currentVictim);
 //			lastMoveHit = true;
 			break;
 		}
-//		default: {
+		default: {
+			System.out.println("miss! " + currentVictim);
 //			lastMoveHit = false;
-//		}
+		}
 		}
 	}
 	
