@@ -1,35 +1,38 @@
 package battleship;
 
+import model.IPoint;
+
 public class GameController {
-	private XuStrategy str1, str2;
+//	private XuStrategy str1, str2;
+	private IStrategy[] st = new IStrategy[]{new XuStrategy() , new XuStrategy()};
+	
 	private boolean gameOver = false;
-
-	public void setStrategy1(XuStrategy str) {
-		str1 = str;
-	}
-
-	public void setStrategy2(XuStrategy str) {
-		str2 = str;
-	}
-
+	int current = 0;
+	
+//	public void setStrategy1(XuStrategy str) {
+//		str1 = str;
+//	}
+//
+//	public void setStrategy2(XuStrategy str) {
+//		str2 = str;
+//	}
+	
 	public boolean next() {
-		if (!gameOver) {
-			str1.move();
-		}
-		if (!gameOver) {
-			str2.move();
-		}
-		return !gameOver;
+//		if (!gameOver) {
+//			str1.move();
+//		}
+//		if (!gameOver) {
+//			str2.move();
+//		}
+//		return !gameOver;
 
-		// int current = 0;
-		// Strategy st = new Strategy[2];
-		// public boolean next(){
-		// Strategy s = st[current];
-		// Move m = s.move();
-		// //Update model here
-		// s.update(//some result);
-		// current = (current + 1) % 2;
-		// return !gameOver;
+		 IStrategy s = st[current];
+		 IPoint p = s.move();
+		 
+//		 s.update(p, );
+		 
+		 current = (current + 1) % 2;
+		 return !gameOver;
 
 	}
 }
