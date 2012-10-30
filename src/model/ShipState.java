@@ -22,7 +22,7 @@ public class ShipState implements IShipState {
 	public boolean isKilled() {
 		boolean dead = true;
 		for (State st : state) {
-			dead = dead && (st == State.MISS);
+			dead = dead && (st == State.HIT);
 		}
 		return dead;
 	}
@@ -30,7 +30,7 @@ public class ShipState implements IShipState {
 	@Override
 	public boolean isHit() {
 		for (State st : state) {
-			if (st == State.MISS) {
+			if (st == State.HIT) {
 				return true;
 			}
 		}
@@ -41,7 +41,7 @@ public class ShipState implements IShipState {
 	public double getLiveStatus() {
 		int nhit = 0;
 		for (State st : state) {
-			if (st == State.MISS) {
+			if (st == State.HIT) {
 				return nhit++;
 			}
 		}
@@ -51,7 +51,7 @@ public class ShipState implements IShipState {
 	
 	public boolean attack(int x, int y) {
 		List<IPoint> position = sd.getPosition();
-//		for (IPoint p: position) {
+
 		for (int i = 0; i < position.size(); i++) {
 			if ((position.get(i).getX() == x) && (position.get(i).getY() == y)) {
 				state[i] = State.HIT;

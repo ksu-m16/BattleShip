@@ -50,8 +50,10 @@ public class FieldModel implements IFieldModel {
 				if (! s.attack(x, y)){
 				continue;	
 				}
+				System.out.println("model: hit" + s.getSize());
 				if (s.isKilled()) {
 					System.out.println("model: killed");
+					states[x][y] = states[x][y].getHitState();
 					return State.KILLED;
 				}
 				break;

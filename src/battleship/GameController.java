@@ -34,7 +34,7 @@ public class GameController {
 
 		IStrategy s = strategies[current];
 		 IPoint p = s.move();
-		 System.out.println("Player " + ((current + 1) % 2) + " move " + p);
+		 System.out.println("Player " + ((current + 1) % 2 + 1) + " move " + p);
 		 State result = models[(current + 1) % 2].attack(p.getX(), p.getY());
 		 s.update(p, result);
 	 
@@ -45,8 +45,11 @@ public class GameController {
 	
 	private boolean isGameOver() {
 		boolean everybodeKilled = true;
-		 for (IShipState s: (models[(current + 1) % 2].getShipStates())) {
+		 for (IShipState s: (models[current].getShipStates())) {
 				 everybodeKilled = everybodeKilled && s.isKilled();
+		 }
+		 if (everybodeKilled) {
+		 System.out.println("Player " + ((current + 1) % 2 + 1) + "win");
 		 }
 		return everybodeKilled;
 	}

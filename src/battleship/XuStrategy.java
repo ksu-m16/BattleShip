@@ -3,6 +3,7 @@ package battleship;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import model.State;
 
 public class XuStrategy implements IStrategy {
 	public XuStrategy() {
-		currentVictim = new ArrayList<IPoint>();
+		currentVictim = new ArrayList<Point>();
 //		fleet = new TreeMap <Integer, Integer>();
 //		fleet.put(1, 4);
 //		fleet.put(2, 3);
@@ -29,7 +30,7 @@ public class XuStrategy implements IStrategy {
 	}
 	
 	private State[][] states;
-	private ArrayList<IPoint> currentVictim;
+	private ArrayList<Point> currentVictim;
 //	private boolean lastMoveHit = false;
 	
 //	private Map<IPoint, State> lastHit;
@@ -106,6 +107,9 @@ public class XuStrategy implements IStrategy {
 			return (fireHorizontal(currentVictim) != null) ? 
 					fireHorizontal(currentVictim) : fireVertical(currentVictim);
 		}
+		
+		Collections.sort(currentVictim);
+		
 		if (isCourseHorisontal(currentVictim)) {
 			System.out.println("horizontal " + currentVictim);
 			return fireHorizontal(currentVictim);
@@ -114,26 +118,28 @@ public class XuStrategy implements IStrategy {
 		return fireVertical(currentVictim);
 	}
 	
-	private IPoint fireHorizontal(ArrayList<IPoint> victim) {
+	private IPoint fireHorizontal(ArrayList<Point> victim) {
 		IPoint left = new Point(victim.get(0).getX() - 1, victim.get(0).getY());
 		if (getAt(left.getX(),left.getY()) == State.EMPTY) {
 			return left;
 		}
 		
-		IPoint right = new Point(victim.get(0).getX() + 1, victim.get(0).getY());
+		IPoint right = new Point((victim.get(victim.size() - 1).getX() + 1), 
+				victim.get(victim.size() - 1).getY());
 		if (getAt(right.getX(),right.getY()) == State.EMPTY) {
 			return right;
 		}
 		return null;
 	}
 	
-	private IPoint fireVertical(ArrayList<IPoint> victim) {
+	private IPoint fireVertical(ArrayList<Point> victim) {
 		IPoint top = new Point(victim.get(0).getX(), victim.get(0).getY() - 1);
 		if (getAt(top.getX(),top.getY()) == State.EMPTY) {
 			return top;
 		}
 		
-		IPoint bottom = new Point(victim.get(0).getX(), victim.get(0).getY() + 1);
+		IPoint bottom = new Point(victim.get(victim.size() - 1).getX(), 
+				victim.get(victim.size() - 1).getY() + 1);
 		if (getAt(bottom.getX(),bottom.getY()) == State.EMPTY) {
 			return bottom;
 		}
@@ -149,7 +155,7 @@ public class XuStrategy implements IStrategy {
 		for (Map.Entry<ArrayList<IPoint>, Integer> whiteSpace: whiteSpacesList.entrySet()) {
 			if (whiteSpace.getValue() == maxSize) {
 				ArrayList<IPoint> whiteSpaceCoords = whiteSpace.getKey();
-				int medianIndex = whiteSpaceCoords.size() / 2 + 1;
+				int medianIndex = whiteSpaceCoords.size() / 2;
 				return whiteSpace.getKey().get(medianIndex);
 			}
 		}
@@ -158,23 +164,21 @@ public class XuStrategy implements IStrategy {
 		
 	}
 	
-	private boolean isCourseHorisontal(ArrayList<IPoint> victim) {
+	private boolean isCourseHorisontal(ArrayList<Point> victim) {
 		boolean isHorizontal = true;
 		boolean isVertical = true;
 		if (victim.size() == 0) {
 			throw new IllegalArgumentException("ship with size = 0");
 		} 
-		if (victim.size() == 1) {
-			return isHorizontal;
-		}
+
 		int x = victim.get(0).getX();
 		int y = victim.get(0).getY();
 		
 		for (IPoint p: victim) {
-			isHorizontal = isHorizontal && (p.getX() == x);
-			isVertical = isVertical && (p.getY() == y);
+			isHorizontal = isHorizontal && (p.getY() == y);
+			isVertical = isVertical && (p.getX() == x);
 		}
-		if (isHorizontal^isVertical){
+		if (isHorizontal != isVertical){
 			return isHorizontal;
 		}
 		throw new IllegalArgumentException("ship with strange form" + victim.toString());
@@ -186,19 +190,19 @@ public class XuStrategy implements IStrategy {
 		states[point.getX()][point.getY()] = state;
 		switch (state) {
 		case KILLED: { 
-			currentVictim.add(point);
+			currentVictim.add((Point)point);
 			surroundCorpse(currentVictim);
 //			fleet.put(currentVictim.size(), (fleet.get(currentVictim.size()) - 1));
 			
 			System.out.println("killed! " + currentVictim);
 			
-			currentVictim = new ArrayList<IPoint>();
+			currentVictim = new ArrayList<Point>();
 //			lastMoveHit = false;
 
 			break;
 		}
 		case HIT: {
-			currentVictim.add(point);
+			currentVictim.add((Point)point);
 			System.out.println("hit! " + currentVictim);
 //			lastMoveHit = true;
 			break;
@@ -213,13 +217,13 @@ public class XuStrategy implements IStrategy {
 	
 	
 	
-	private void surroundCorpse(ArrayList<IPoint> corpse){
-		for (IPoint p : corpse) {
+	private void surroundCorpse(ArrayList<Point> corpse){
+		for (Point p : corpse) {
 			makePerimeter(p);
 		}
 	}
 
-	private void makePerimeter(IPoint p) {
+	private void makePerimeter(Point p) {
 		int x = p.getX();
 		int y = p.getY();
 		for (int i = 0; i < 3; i++) {
