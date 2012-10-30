@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import model.FieldModel;
-import model.IFieldModel;
 import model.IPoint;
 import model.IShipDescription;
 import model.Point;
@@ -19,7 +17,7 @@ public class SetupStrategy implements ISetupStrategy {
 
 	@Override
 	public List<IShipDescription> getShips() {
-//		System.out.println("SetupStrategy.getShips()");
+		// System.out.println("SetupStrategy.getShips()");
 
 		field = new State[GameDescription.XMAX][GameDescription.YMAX];
 		for (int i = 0; i < GameDescription.XMAX; i++) {
@@ -28,7 +26,7 @@ public class SetupStrategy implements ISetupStrategy {
 			}
 		}
 
-		int shipsSizes[] = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
+		int shipsSizes[] = { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
 
 		List<IShipDescription> listOfShips = new ArrayList<IShipDescription>();
 
@@ -55,17 +53,19 @@ public class SetupStrategy implements ISetupStrategy {
 					x = r.nextInt(field.length);
 					y = r.nextInt(field[0].length - shipSize + 1);
 				}
-				
-				IShipDescription s = new ShipDescription(new Point(x, y), shipSize,course);
+
+				IShipDescription s = new ShipDescription(new Point(x, y),
+						shipSize, course);
 
 				if (SetupHelper.checkShipPlacement(s, field)) {
 					shipCanBePlaced = true;
 					listOfShips.add(s);
-//					System.out.println("ship placed:" + s.getPosition().size());
+					// System.out.println("ship placed:" +
+					// s.getPosition().size());
 					placeShip(s);
 					makePerimeter(s);
-//					printField();
-//					System.out.println("-----------------");
+					// printField();
+					// System.out.println("-----------------");
 				}
 
 			}
@@ -79,7 +79,7 @@ public class SetupStrategy implements ISetupStrategy {
 		List<IPoint> position = s.getPosition();
 		for (IPoint p : position) {
 			field[p.getX()][p.getY()] = State.SHIP;
-//			System.out.println("x: " + p.getX() + " y: " + p.getY());
+			// System.out.println("x: " + p.getX() + " y: " + p.getY());
 		}
 	}
 
@@ -103,20 +103,22 @@ public class SetupStrategy implements ISetupStrategy {
 	}
 
 	private State getAt(int x, int y) {
-		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
+		if (x < 0 || y < 0 || x >= GameDescription.XMAX
+				|| y >= GameDescription.YMAX) {
 			return State.EMPTY;
 		}
 		return field[x][y];
 	}
-	
+
 	private void setAt(int x, int y, State st) {
-		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
+		if (x < 0 || y < 0 || x >= GameDescription.XMAX
+				|| y >= GameDescription.YMAX) {
 			return;
 		}
 		field[x][y] = st;
-		
+
 	}
-	
+
 	private void printField() {
 		for (int j = 0; j < field.length; j++) {
 			for (int i = 0; i < field.length; i++) {

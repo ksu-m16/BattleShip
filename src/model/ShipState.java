@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ShipState implements IShipState {
-	public ShipState (IShipDescription sd) {
+	public ShipState(IShipDescription sd) {
 		this.sd = sd;
 		state = new State[sd.getSize()];
 		Arrays.fill(state, State.SHIP);
 	}
-	
+
 	private IShipDescription sd;
 	private State[] state;
 
@@ -47,9 +47,9 @@ public class ShipState implements IShipState {
 		}
 		return ((state.length - nhit) * 100 / state.length);
 	}
-	
-	
+
 	public boolean attack(int x, int y) {
+
 		List<IPoint> position = sd.getPosition();
 
 		for (int i = 0; i < position.size(); i++) {
@@ -59,7 +59,7 @@ public class ShipState implements IShipState {
 			}
 		}
 		return false;
-		
+
 	}
 
 }

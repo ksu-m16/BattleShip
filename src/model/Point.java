@@ -17,23 +17,23 @@ public class Point implements IPoint, Comparable<IPoint> {
 	public int getY() {
 		return y;
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return "[" + x + "," + y + "]";
 	}
 
 	@Override
 	public int compareTo(IPoint p) {
 		if (x == p.getX()) {
-			
+
 			if (y == p.getY()) {
 				return 0;
 			}
-			
+
 			return y > p.getY() ? 1 : (-1);
 		}
-		
+
 		return x > p.getX() ? 1 : (-1);
-		
+
 	}
 }

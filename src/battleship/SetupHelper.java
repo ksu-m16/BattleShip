@@ -42,13 +42,14 @@ public class SetupHelper {
 		}
 		return true;
 	}
-	
+
 	private static State getAt(int x, int y, State[][] field) {
-		if (x < 0 || y < 0 || x >= GameDescription.XMAX || y >= GameDescription.YMAX) {
+		if (x < 0 || y < 0 || x >= GameDescription.XMAX
+				|| y >= GameDescription.YMAX) {
 			return State.EMPTY;
 		}
 		return field[x][y];
-		
+
 	}
 
 }

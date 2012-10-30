@@ -4,5 +4,6 @@ import java.util.List;
 
 public interface IShipDescription {
 	List<IPoint> getPosition();
+
 	int getSize();
 }

@@ -1,32 +1,74 @@
 package battleship;
 
-import model.FieldModel;
 import model.IFieldModel;
 
 public class Application {
-	public void init() {
-		SetupController sc = new SetupController();
-		GameController gc = new GameController();
-
-		//setup fields
-		SetupStrategy ss1 = new SetupStrategy();
-		SetupStrategy ss2 = new SetupStrategy();
-		sc.setSetupStrategy(ss1);
-		IFieldModel f1 = sc.setup();
-		sc.setSetupStrategy(ss2);
-		IFieldModel f2 = sc.setup();
+	
+	private GameController gc;
+	private SetupController sc;
+	private SetupStrategy ss1;
+	private SetupStrategy ss2;
+	private IFieldModel f1;
+	private IFieldModel f2;
+	private IStrategy str1;
+	private IStrategy str2;
+	
+	
+	private int ngames = 1000;
+	private int firstPlayerWins = 0;
+	private int winner;
+	
+	public void startChampionship() {
+		for (int i = 0; i < ngames; i++) {
+			init();
+			play();
+		}
+		System.out.println(ngames + " games played.");
+		System.out.println("Player 1 wins " + firstPlayerWins + " times.");
+		System.out.println("Player 2 wins " + (ngames - firstPlayerWins) + " times.");
 		
-		//setup gamecontroller
-		XuStrategy str1 = new XuStrategy();
-		XuStrategy str2 = new XuStrategy();
+		if (firstPlayerWins == (ngames - firstPlayerWins)) {
+			System.out.println("Friendship wins!");
+		}
+		winner = (firstPlayerWins > ngames / 2) ? 0 : 1;
+		
+		System.out.println("Player " + (winner + 1) + " wins championship");
+	}
+	
+	public void init() {
+		sc = new SetupController();
+		gc = new GameController();
+
+		// setup fields
+		ss1 = new SetupStrategy();
+		ss2 = new SetupStrategy();
+		sc.setSetupStrategy(ss1);
+		f1 = sc.setup();
+		sc.setSetupStrategy(ss2);
+		f2 = sc.setup();
+
+		// setup gamecontroller
+		str1 = new XuStrategy();
+		str2 = new XuStrategy();
 		gc.setPlayer1Strategy(str1);
 		gc.setPlayer2Strategy(str2);
 		gc.setPlayer1Model(f1);
 		gc.setPlayer2Model(f2);
-		while (gc.next()){}
-		System.out.println("player1 field");
-		f1.printField();
-		System.out.println("player2 field");
-		f2.printField();
+	}
+	
+	public void play() {
+		while (gc.next()) {
+		}
+		
+		if (gc.getWinner() == 0) {
+			firstPlayerWins++;
+		}
+		
+//		System.out.println();
+//		System.out.println("player 1 field");
+//		f1.printField();
+//		System.out.println();
+//		System.out.println("player 2 field");
+//		f2.printField();
 	}
 }
