@@ -14,7 +14,7 @@ public class Application {
 	private IStrategy str2;
 	
 	
-	private int ngames = 1000;
+	private int ngames = 1;
 	private int firstPlayerWins = 0;
 	private int winner;
 	
@@ -49,7 +49,7 @@ public class Application {
 
 		// setup gamecontroller
 		str1 = new XuStrategy();
-		str2 = new XuStrategy();
+		str2 = new XuStrategy2();
 		gc.setPlayer1Strategy(str1);
 		gc.setPlayer2Strategy(str2);
 		gc.setPlayer1Model(f1);

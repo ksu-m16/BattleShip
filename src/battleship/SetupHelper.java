@@ -36,6 +36,9 @@ public class SetupHelper {
 				if (getAt(x - 1 + i, y - 1 + j, field) == State.FORBIDDEN) {
 					continue;
 				}
+				if (getAt(x - 1 + i, y - 1 + j, field) == State.MISS) {
+					continue;
+				}
 				return false;
 			}
 
@@ -46,7 +49,7 @@ public class SetupHelper {
 	private static State getAt(int x, int y, State[][] field) {
 		if (x < 0 || y < 0 || x >= GameDescription.XMAX
 				|| y >= GameDescription.YMAX) {
-			return State.EMPTY;
+			return State.FORBIDDEN;
 		}
 		return field[x][y];
 

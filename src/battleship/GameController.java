@@ -53,7 +53,7 @@ public class GameController {
 		}
 		if (everybodeKilled) {
 			winner = current;
-			System.out.println("Player " + (current + 1)  + " win!");
+//			System.out.println("Player " + (current + 1)  + " win!");
 		}
 		return everybodeKilled;
 	}
