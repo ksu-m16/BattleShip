@@ -14,7 +14,7 @@ public class Application {
 	private IStrategy str2;
 	
 	
-	private int ngames = 1;
+	private int ngames = 10000;
 	private int firstPlayerWins = 0;
 	private int winner;
 	
@@ -30,9 +30,11 @@ public class Application {
 		if (firstPlayerWins == (ngames - firstPlayerWins)) {
 			System.out.println("Friendship wins!");
 		}
-		winner = (firstPlayerWins > ngames / 2) ? 0 : 1;
 		
-		System.out.println("Player " + (winner + 1) + " wins championship");
+		else {
+			winner = (firstPlayerWins > ngames / 2) ? 0 : 1;
+			System.out.println("Player " + (winner + 1) + " wins championship");
+		}
 	}
 	
 	public void init() {
@@ -49,7 +51,7 @@ public class Application {
 
 		// setup gamecontroller
 		str1 = new XuStrategy();
-		str2 = new XuStrategy2();
+		str2 = new XuStrategy3();
 		gc.setPlayer1Strategy(str1);
 		gc.setPlayer2Strategy(str2);
 		gc.setPlayer1Model(f1);

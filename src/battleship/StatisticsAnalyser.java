@@ -16,37 +16,33 @@ import model.ShipDescription;
 import model.State;
 import model.ShipDescription.Course;
 
-
 public class StatisticsAnalyser {
-//	StatisticsAnalyser(State[][] states) {
-//		this.states = states;
-//	}
+	// StatisticsAnalyser(State[][] states) {
+	// this.states = states;
+	// }
 	StatisticsAnalyser(State[][] states, Map<Integer, Integer> fleet) {
 		this.states = states;
 		this.fleet = fleet;
 		fleetArr = getShipsSizes();
-//		System.out.println(Arrays.toString(fleetArr));
-		
+		// System.out.println(Arrays.toString(fleetArr));
+
 	}
-	
-	
+
 	private State[][] states;
-	
-	private Map<Integer, Integer> fleet; //<int size, int count>
+
+	private Map<Integer, Integer> fleet; // <int size, int count>
 	private Integer[] fleetArr;
-	
-	private ArrayList<IPoint> whiteSpacesList; 
-	
-	
-	private final int nSetups = 10;
+
+	private ArrayList<IPoint> whiteSpacesList;
+
+	private final int nSetups = 1000;
 
 	public IPoint attack() {
-		
-//		printField(states);
+
+		// printField(states);
 		return attack(getSetupStatistics(getPossibleSetups()));
 	}
-	
-	
+
 	private void makePerimeter(List<IPoint> ship, State[][] field) {
 		for (IPoint p : ship) {
 			makePerimeter(p, field);
@@ -66,19 +62,17 @@ public class StatisticsAnalyser {
 	}
 
 	private State getAt(int x, int y, State[][] field) {
-		if (x < 0 || y < 0 || x >= field.length
-				|| y >= field[0].length) {
+		if (x < 0 || y < 0 || x >= field.length || y >= field[0].length) {
 			return State.FORBIDDEN;
 		}
 		return field[x][y];
 	}
 
 	private void setAt(int x, int y, State[][] field, State st) {
-		if (x < 0 || y < 0 || x >= field.length
-				|| y >= field[0].length) {
+		if (x < 0 || y < 0 || x >= field.length || y >= field[0].length) {
 			// return;
-			throw new IllegalArgumentException(
-					"try to shoot out of field: " + x + ", " + y);
+			throw new IllegalArgumentException("try to shoot out of field: "
+					+ x + ", " + y);
 		}
 		field[x][y] = st;
 
@@ -86,151 +80,160 @@ public class StatisticsAnalyser {
 
 	private ArrayList<State[][]> getPossibleSetups() {
 		ArrayList<State[][]> setups = new ArrayList<State[][]>();
-		
+
 		for (int i = 0; i < nSetups; i++) {
 			setups.add(getPossibleSetup());
+//			System.out.println("setup " + i);
 		}
 
 		return setups;
 	}
-	
+
 	// counts total number of SHIP state for every point
 	private int[][] getSetupStatistics(ArrayList<State[][]> setups) {
 		int[][] statistics = new int[states.length][states[0].length];
-		
+
 		for (State[][] setup : setups) {
 			for (int i = 0; i < states.length; i++) {
 				for (int j = 0; j < states[0].length; j++) {
-					if (setup[i][j] == State.SHIP){
+					if (setup[i][j] == State.SHIP) {
 						statistics[i][j]++;
 					}
 				}
 			}
 		}
 		return statistics;
-	} 
-	
+	}
+
 	private IPoint attack(int[][] statistics) {
-		
+
 		HashMap<IPoint, Integer> statsMap = new HashMap<IPoint, Integer>();
-		
+
 		for (int i = 0; i < statistics.length; i++) {
 			for (int j = 0; j < statistics[0].length; j++) {
-				statsMap.put(new Point(i,j), statistics[i][j]);
+				statsMap.put(new Point(i, j), statistics[i][j]);
 			}
 		}
 		StatsMapSorter ms = new StatsMapSorter(statsMap);
 		TreeMap<IPoint, Integer> sortedStatsMap = ms.sortByCount();
-		
-//		for (Map.Entry<IPoint, Integer> entry : sortedStatsMap.entrySet()) {
-////			System.out.println(entry);
-//		}
-		
+
+		// for (Map.Entry<IPoint, Integer> entry : sortedStatsMap.entrySet()) {
+		// // System.out.println(entry);
+		// }
+
 		for (Map.Entry<IPoint, Integer> entry : sortedStatsMap.entrySet()) {
-			if(states[entry.getKey().getX()][entry.getKey().getY()] == State.EMPTY){
-				return entry.getKey();		
+			if (states[entry.getKey().getX()][entry.getKey().getY()] == State.EMPTY) {
+				return entry.getKey();
 			}
 		}
-		
+
 		System.out.println("Statistics is weak here =(");
-		
+
 		return null;
-		
-		
+
 	}
-	
+
 	private class StatsMapSorter {
 		StatsMapSorter(HashMap<IPoint, Integer> statsMap) {
 			this.statsMap = statsMap;
 		}
 
-	    private HashMap<IPoint, Integer> statsMap;
+		private HashMap<IPoint, Integer> statsMap;
 
-	    public TreeMap<IPoint, Integer> sortByCount() {
-	        TreeMap<IPoint, Integer> sortedStatsMap = new TreeMap<IPoint, Integer>(new Comparator<IPoint>() {
-	            public int compare(IPoint p1, IPoint p2) {
-	                int i1 = statsMap.get(p1);
-	                int i2 = statsMap.get(p2);
-	                if (i1 < i2) return 1;
-	                return -1;
-	            }
-	        });
-	        sortedStatsMap.putAll(statsMap);
-	        return sortedStatsMap;
-	    }
-	}
-	
-	
-	private State[][] getPossibleSetup() {
-//		System.out.println("getPossibleSetup");
-//		System.out.println("ships" + Arrays.toString(fleetArr));
-		State[][] possibleSetup = new State[states.length][states[0].length];
-		for (int i = 0; i < states.length; i++) {
-			for (int j = 0; j < states[0].length; j++) {
-				possibleSetup[i][j] = states[i][j];
-			}
+		public TreeMap<IPoint, Integer> sortByCount() {
+			TreeMap<IPoint, Integer> sortedStatsMap = new TreeMap<IPoint, Integer>(
+					new Comparator<IPoint>() {
+						public int compare(IPoint p1, IPoint p2) {
+							int i1 = statsMap.get(p1);
+							int i2 = statsMap.get(p2);
+							if (i1 < i2)
+								return 1;
+							return -1;
+						}
+					});
+			sortedStatsMap.putAll(statsMap);
+			return sortedStatsMap;
 		}
-		
-		
+	}
 
-//		List<IShipDescription> listOfShips = new ArrayList<IShipDescription>();
+	private State[][] getPossibleSetup() {
+		// System.out.println("getPossibleSetup");
+//		 System.out.println("ships" + Arrays.toString(fleetArr));
 
-		for (int i = fleetArr.length - 1; i >= 0; i--) {
-//			System.out.println("i " + i);
-			updateWhiteSpaceList(possibleSetup);
-//		for (Integer shipSize : shipsSizesArray) {
-			int shipSize = fleetArr[i];
-			boolean shipCanBePlaced = false;
-			int nTries = 100;
-			int n = 0;
-			while (!shipCanBePlaced) {
+		State[][] possibleSetup = new State[states.length][states[0].length];
+		int nTries = 100;
 
-				Random r = new Random();
-				int index = r.nextInt(whiteSpacesList.size());
-				int x = 0;
-				int y = 0;
+		outer: for (int n = 0; n < nTries; n++) {
+//			System.out.println("ships" + Arrays.toString(fleetArr));
+			for (int i = 0; i < states.length; i++) {
+				for (int j = 0; j < states[0].length; j++) {
+					possibleSetup[i][j] = states[i][j];
+				}
+			}
 
-				// Course is random, too. 42 is meaning of life, the universe
-				// and everything.
-				Course course = r.nextInt(42) < 21 ? Course.HORIZONTAL
-						: Course.VERTICAL;
+			for (int i = fleetArr.length - 1; i >= 0; i--) {
+				updateWhiteSpaceList(possibleSetup);
+				// for (Integer shipSize : shipsSizesArray) {
+				int shipSize = fleetArr[i];
+				boolean shipCanBePlaced = false;
+
+				int j = 0;
+				while (!shipCanBePlaced) {
+//				for(int j = 0; (!shipCanBePlaced) && (j < nTries); j++) {
+
+					Random r = new Random();
+					
+					if(whiteSpacesList.size() == 0) {
+						continue outer;
+					}
+					
+					int index = r.nextInt(whiteSpacesList.size());
+					int x = 0;
+					int y = 0;
+
+					// Course is random, too. 42 is meaning of life, the
+					// universe
+					// and everything.
+					Course course = r.nextInt(42) < 21 ? Course.HORIZONTAL
+							: Course.VERTICAL;
 
 					x = whiteSpacesList.get(index).getX();
 					y = whiteSpacesList.get(index).getY();
-			
-				IShipDescription s = new ShipDescription(new Point(x, y),
-						shipSize, course);
 
-				if (SetupHelper.checkShipPlacement(s, possibleSetup)) {
-					shipCanBePlaced = true;
-//					listOfShips.add(s);
-//					 System.out.println("ship placed:" +
-//					 s.getPosition().size());
-//					 System.out.println(s.getPosition());
-					placeShip(s.getPosition(), possibleSetup);
-					makePerimeter(s.getPosition(), possibleSetup);
-					// printField();
-					// System.out.println("-----------------");
-					break;
+					IShipDescription s = new ShipDescription(new Point(x, y),
+							shipSize, course);
+
+					if (SetupHelper.checkShipPlacement(s, possibleSetup)) {
+						shipCanBePlaced = true;
+						// listOfShips.add(s);
+//						 System.out.println("ship placed:" +
+//						 s.getPosition().size());
+//						 System.out.println(s.getPosition());
+						placeShip(s.getPosition(), possibleSetup);
+						makePerimeter(s.getPosition(), possibleSetup);
+						// printField();
+						// System.out.println("-----------------");
+						break;
+					}
+					j++;
+					if (j > nTries) {
+//						System.out.println("too much tries");
+						continue outer;
+					}
+					
+
 				}
-				n++;
-//				System.out.println("n = " + n);
-				if(n > nTries) {
-//					System.out.println("too much tries");
-//					printField(possibleSetup);
-					getPossibleSetup();
-				}
-				
+
 			}
-
+			break outer;
+			// printField(possibleSetup);
+			// return possibleSetup;
 		}
-//		printField(possibleSetup);
 		return possibleSetup;
 	}
-	
 
 	private Integer[] getShipsSizes() {
-//		System.out.println("fleet " + fleet.size());
+		// System.out.println("fleet " + fleet.size());
 		ArrayList<Integer> shipsSizes = new ArrayList<Integer>();
 		for (Map.Entry<Integer, Integer> entry : fleet.entrySet()) {
 			for (int i = 0; i < entry.getValue(); i++) {
@@ -240,9 +243,9 @@ public class StatisticsAnalyser {
 		Integer[] shipsSizesArray = new Integer[shipsSizes.size()];
 		shipsSizes.toArray(shipsSizesArray);
 		Arrays.sort(shipsSizesArray);
-		return shipsSizesArray;		
+		return shipsSizesArray;
 	}
-	
+
 	private State[][] placeShip(List<IPoint> ship, State[][] field) {
 		for (IPoint p : ship) {
 			field[p.getX()][p.getY()] = State.SHIP;
@@ -250,9 +253,7 @@ public class StatisticsAnalyser {
 		}
 		return field;
 	}
-	
-	
-	
+
 	private void updateWhiteSpaceList(State[][] field) {
 		whiteSpacesList = new ArrayList<IPoint>();
 		for (int i = 0; i < field.length; i++) {
@@ -275,6 +276,5 @@ public class StatisticsAnalyser {
 			System.out.println();
 		}
 	}
-	
 
 }
