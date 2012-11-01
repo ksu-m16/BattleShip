@@ -39,6 +39,10 @@ class KPoint implements IPoint {
 		return move(d.delta);
 	}
 	
+	KPoint next(KDirection d, int steps) {
+		return move(d.delta.x*steps, d.delta.y*steps);
+	}
+	
 	@Override
 	public String toString() {	
 		return x + ":" + y;

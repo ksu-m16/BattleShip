@@ -159,10 +159,7 @@ public class KSetupStrategy implements ISetupStrategy {
 	
 	static ISetupStrategy[] strategies = { new RandomSS(), new BoundSS(), new DirectionSS() };
 	
-	static void update(boolean win) {
-		if (!win) {
-			return;
-		}
+	static void winner() {
 		stats[current]++;
 		count++;		
 	}

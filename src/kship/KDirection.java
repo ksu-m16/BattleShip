@@ -7,6 +7,8 @@ enum KDirection {
 		delta = new KPoint(dx, dy);
 	}
 	
+	static final KDirection[] all = {LEFT, UP, RIGHT, DOWN}; 
+	
 	static KDirection random() {
 		double r = Math.random();
 		if (r < 0.25) return LEFT;

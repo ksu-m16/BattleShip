@@ -28,6 +28,14 @@ class KShipDescription implements IShipDescription {
 		
 		return plist;
 	}
+	
+	public KPoint getStart() {
+		return pos;
+	}
+	
+	public KPoint getEnd() {
+		return pos.next(dir, size - 1);
+	}
 
 	@Override
 	public int getSize() {

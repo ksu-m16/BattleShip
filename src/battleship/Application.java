@@ -1,20 +1,22 @@
 package battleship;
 
+import kship.KGameStategy;
+import kship.KSetupStrategy;
 import model.IFieldModel;
 
 public class Application {
 	
 	private GameController gc;
 	private SetupController sc;
-	private SetupStrategy ss1;
-	private SetupStrategy ss2;
+	private ISetupStrategy ss1;
+	private ISetupStrategy ss2;
 	private IFieldModel f1;
 	private IFieldModel f2;
 	private IStrategy str1;
 	private IStrategy str2;
 	
 	
-	private int ngames = 10000;
+	private int ngames = 100;
 	private int firstPlayerWins = 0;
 	private int winner;
 	
@@ -43,14 +45,14 @@ public class Application {
 
 		// setup fields
 		ss1 = new SetupStrategy();
-		ss2 = new SetupStrategy();
+		ss2 = new KSetupStrategy();
 		sc.setSetupStrategy(ss1);
 		f1 = sc.setup();
 		sc.setSetupStrategy(ss2);
 		f2 = sc.setup();
 
 		// setup gamecontroller
-		str1 = new XuStrategy();
+		str1 = new KGameStategy(1., 2., 3.);
 		str2 = new XuStrategy3();
 		gc.setPlayer1Strategy(str1);
 		gc.setPlayer2Strategy(str2);

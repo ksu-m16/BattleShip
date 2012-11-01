@@ -1,5 +1,6 @@
 package kship;
 
+import model.IPoint;
 import battleship.GameDescription;
 
 class KHelper {
@@ -15,11 +16,20 @@ class KHelper {
 		}
 	}
 	
-	static boolean isInField(KPoint p) {
-		if ((p.x < 0) || (p.y < 0) 
-		 || (p.x >= GameDescription.XMAX) || (p.y >= GameDescription.YMAX)) {
+	static void printField(double[][] field, double factor) {
+		for (double[] line : field) {
+			for(double cell : line) {
+				System.out.print(String.format("%02.02f ", cell * factor));				
+			}
+			System.out.println();
+		}					
+	}
+	
+	static boolean isInField(IPoint p) {
+		if ((p.getX() < 0) || (p.getY() < 0) 
+		 || (p.getX() >= GameDescription.XMAX) || (p.getY() >= GameDescription.YMAX)) {
 			return false;
 		}		
 		return true;
-	}	
+	}		
 }
