@@ -13,12 +13,13 @@ public class SetupHelper {
 
 		List<IPoint> shipCoords = s.getPosition();
 		for (IPoint p : shipCoords) {
-			
-			if (p.getX() < 0 || p.getY() < 0 || p.getX() >= GameDescription.XMAX
-				|| p.getY() >= GameDescription.YMAX){
+
+			if (p.getX() < 0 || p.getY() < 0
+					|| p.getX() >= GameDescription.XMAX
+					|| p.getY() >= GameDescription.YMAX) {
 				return false;
 			}
-			
+
 			if (!trySector(p, field)) {
 				return false;
 			}

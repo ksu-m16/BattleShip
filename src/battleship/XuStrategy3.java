@@ -92,100 +92,101 @@ public class XuStrategy3 implements IStrategy {
 			}
 		}
 	}
-	
-	//point to attack near the specified point
-	private IPoint selectWhitespace(Point p, ArrayList<ArrayList<IPoint>> pointWhiteSpaceList) {
-		
+
+	// point to attack near the specified point
+	private IPoint selectWhitespace(Point p,
+			ArrayList<ArrayList<IPoint>> pointWhiteSpaceList) {
+
 		ArrayList<IPoint> maxWhitespace = pointWhiteSpaceList.get(0);
-		for(ArrayList<IPoint> whitespace: pointWhiteSpaceList) {
+		for (ArrayList<IPoint> whitespace : pointWhiteSpaceList) {
 			if (whitespace.size() > maxWhitespace.size()) {
 				maxWhitespace = whitespace;
 			}
 		}
-		
-		for (IPoint w: maxWhitespace) {
+
+		for (IPoint w : maxWhitespace) {
 			if (Math.abs(w.getX() - p.getX()) == 1) {
 				return w;
 			}
 			if (Math.abs(w.getY() - p.getY()) == 1) {
 				return w;
 			}
-			
+
 		}
-		throw new IllegalArgumentException("Unable to find emty point near the specified.");		
+		throw new IllegalArgumentException(
+				"Unable to find emty point near the specified.");
 	}
-	
-	//list of whitspaces around specified point
+
+	// list of whitspaces around specified point
 	private ArrayList<ArrayList<IPoint>> getPointWhiteSpaceList(Point p) {
-		ArrayList<ArrayList<IPoint>> pointWhiteSpaceList = 
-				new ArrayList<ArrayList<IPoint>>();
-		
+		ArrayList<ArrayList<IPoint>> pointWhiteSpaceList = new ArrayList<ArrayList<IPoint>>();
+
 		ArrayList<IPoint> whitespace = new ArrayList<IPoint>();
-		//left
+		// left
 		for (int i = p.getX() - 1; i >= 0; i--) {
-			if(!extendWhitespace(i, p.getY(),whitespace, states)) {
+			if (!extendWhitespace(i, p.getY(), whitespace, states)) {
 				break;
 			}
 		}
-		
+
 		if (whitespace.size() != 0) {
 			pointWhiteSpaceList.add(whitespace);
 			whitespace = new ArrayList<IPoint>();
 		}
-		
-		//right
+
+		// right
 		for (int i = p.getX() + 1; i < states.length; i++) {
-			if(!extendWhitespace(i, p.getY(),whitespace, states)) {
+			if (!extendWhitespace(i, p.getY(), whitespace, states)) {
 				break;
 			}
 		}
-		
+
 		if (whitespace.size() != 0) {
 			pointWhiteSpaceList.add(whitespace);
 			whitespace = new ArrayList<IPoint>();
 		}
-		
-		//up
+
+		// up
 		for (int i = p.getY() - 1; i >= 0; i--) {
-			if(!extendWhitespace(p.getX(), i, whitespace, states)) {
+			if (!extendWhitespace(p.getX(), i, whitespace, states)) {
 				break;
 			}
 		}
-		
+
 		if (whitespace.size() != 0) {
 			pointWhiteSpaceList.add(whitespace);
 			whitespace = new ArrayList<IPoint>();
 		}
-		
-		//down
+
+		// down
 		for (int i = p.getY() + 1; i < states[0].length; i++) {
-			if(!extendWhitespace(p.getX(), i, whitespace, states)) {
+			if (!extendWhitespace(p.getX(), i, whitespace, states)) {
 				break;
 			}
 		}
-		
+
 		if (whitespace.size() != 0) {
 			pointWhiteSpaceList.add(whitespace);
 			whitespace = new ArrayList<IPoint>();
 		}
-		
+
 		return pointWhiteSpaceList;
 	}
-	
-	private boolean extendWhitespace(int i, int j, 
+
+	private boolean extendWhitespace(int i, int j,
 			ArrayList<IPoint> whitespace, State[][] field) {
-		if(states[i][j] != State.EMPTY) {
+		if (states[i][j] != State.EMPTY) {
 			return false;
 		}
 		whitespace.add(new Point(i, j));
 
 		return true;
 	}
-	
 
 	private IPoint finishHim() {
 		if (currentVictim.size() == 1) {
-			return selectWhitespace(currentVictim.get(0), getPointWhiteSpaceList(currentVictim.get(0)));
+			return selectWhitespace(currentVictim.get(0),
+					getPointWhiteSpaceList(currentVictim.get(0)));
 		}
 
 		Collections.sort(currentVictim);

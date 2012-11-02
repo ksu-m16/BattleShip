@@ -9,10 +9,10 @@ public class GameController {
 
 	private IStrategy[] strategies = new IStrategy[2];
 	private IFieldModel[] models = new IFieldModel[2];
-	
+
 	private int winner = 0;
-	
-	int current = (int)Math.round(Math.random());
+
+	int current = (int) Math.round(Math.random());
 
 	public void setPlayer1Strategy(IStrategy str) {
 		strategies[0] = str;
@@ -34,7 +34,7 @@ public class GameController {
 
 		IStrategy s = strategies[current];
 		IPoint p = s.move();
-//		System.out.println("Player " + (current + 1) + " move " + p);
+//		 System.out.println("Player " + (current + 1) + " move " + p);
 		State result = models[(current + 1) % 2].attack(p.getX(), p.getY());
 		s.update(p, result);
 
@@ -53,7 +53,7 @@ public class GameController {
 		}
 		if (everybodeKilled) {
 			winner = current;
-//			System.out.println("Player " + (current + 1)  + " win!");
+			// System.out.println("Player " + (current + 1) + " win!");
 		}
 		return everybodeKilled;
 	}
@@ -61,5 +61,5 @@ public class GameController {
 	public int getWinner() {
 		return winner;
 	}
-	
+
 }

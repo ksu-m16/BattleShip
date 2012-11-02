@@ -83,7 +83,7 @@ public class StatisticsAnalyser {
 
 		for (int i = 0; i < nSetups; i++) {
 			setups.add(getPossibleSetup());
-//			System.out.println("setup " + i);
+			// System.out.println("setup " + i);
 		}
 
 		return setups;
@@ -158,13 +158,13 @@ public class StatisticsAnalyser {
 
 	private State[][] getPossibleSetup() {
 		// System.out.println("getPossibleSetup");
-//		 System.out.println("ships" + Arrays.toString(fleetArr));
+		// System.out.println("ships" + Arrays.toString(fleetArr));
 
 		State[][] possibleSetup = new State[states.length][states[0].length];
 		int nTries = 100;
 
 		outer: for (int n = 0; n < nTries; n++) {
-//			System.out.println("ships" + Arrays.toString(fleetArr));
+			// System.out.println("ships" + Arrays.toString(fleetArr));
 			for (int i = 0; i < states.length; i++) {
 				for (int j = 0; j < states[0].length; j++) {
 					possibleSetup[i][j] = states[i][j];
@@ -179,14 +179,14 @@ public class StatisticsAnalyser {
 
 				int j = 0;
 				while (!shipCanBePlaced) {
-//				for(int j = 0; (!shipCanBePlaced) && (j < nTries); j++) {
+					// for(int j = 0; (!shipCanBePlaced) && (j < nTries); j++) {
 
 					Random r = new Random();
-					
-					if(whiteSpacesList.size() == 0) {
+
+					if (whiteSpacesList.size() == 0) {
 						continue outer;
 					}
-					
+
 					int index = r.nextInt(whiteSpacesList.size());
 					int x = 0;
 					int y = 0;
@@ -206,9 +206,9 @@ public class StatisticsAnalyser {
 					if (SetupHelper.checkShipPlacement(s, possibleSetup)) {
 						shipCanBePlaced = true;
 						// listOfShips.add(s);
-//						 System.out.println("ship placed:" +
-//						 s.getPosition().size());
-//						 System.out.println(s.getPosition());
+						// System.out.println("ship placed:" +
+						// s.getPosition().size());
+						// System.out.println(s.getPosition());
 						placeShip(s.getPosition(), possibleSetup);
 						makePerimeter(s.getPosition(), possibleSetup);
 						// printField();
@@ -217,10 +217,9 @@ public class StatisticsAnalyser {
 					}
 					j++;
 					if (j > nTries) {
-//						System.out.println("too much tries");
+						// System.out.println("too much tries");
 						continue outer;
 					}
-					
 
 				}
 

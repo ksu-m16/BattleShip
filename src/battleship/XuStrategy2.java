@@ -17,18 +17,18 @@ import model.ShipDescription;
 import model.State;
 import model.ShipDescription.Course;
 
-public class XuStrategy2 implements IStrategy{
+public class XuStrategy2 implements IStrategy {
 
 	public XuStrategy2() {
 		currentVictim = new ArrayList<Point>();
-		 fleet = new TreeMap <Integer, Integer>();
-		 fleet.put(1, 4);
-		 fleet.put(2, 3);
-		 fleet.put(3, 2);
-		 fleet.put(4, 1);
-		
-		 killedFleet = new TreeMap <Integer, Integer>();
-		 
+		fleet = new TreeMap<Integer, Integer>();
+		fleet.put(1, 4);
+		fleet.put(2, 3);
+		fleet.put(3, 2);
+		fleet.put(4, 1);
+
+		killedFleet = new TreeMap<Integer, Integer>();
+
 		states = new State[GameDescription.XMAX][GameDescription.YMAX];
 		for (int i = 0; i < GameDescription.XMAX; i++) {
 			for (int j = 0; j < GameDescription.YMAX; j++) {
@@ -40,13 +40,13 @@ public class XuStrategy2 implements IStrategy{
 	private State[][] states;
 	private ArrayList<Point> currentVictim;
 
-	private Map<Integer, Integer> fleet; //<int size, int count>
+	private Map<Integer, Integer> fleet; // <int size, int count>
 	private Map<Integer, Integer> killedFleet;
-	
+
 	private HashMap<ArrayList<IPoint>, Integer> whiteSpacesList; // position,
 																	// size
-	private final int minAttacksCount = 10; 
-	
+	private final int minAttacksCount = 10;
+
 	// private enum EnemyState {
 	// MISS, HIT, FORBIDDEN;
 	// }
@@ -57,14 +57,15 @@ public class XuStrategy2 implements IStrategy{
 		if (currentVictim.size() != 0) {
 			return finishHim();
 		}
-		
+
 		if (getOpenedPointsCount() > minAttacksCount) {
 			IPoint p = new StatisticsAnalyser(states, fleet).attack();
-			if ( p != null) {
+			if (p != null) {
 				return p;
 			}
 			return fireRandom();
-//			return fireSophisticated(getSetupStatistics(getPossibleSetups()));
+			// return
+			// fireSophisticated(getSetupStatistics(getPossibleSetups()));
 		}
 
 		updateWhiteSpaceList();
@@ -205,19 +206,18 @@ public class XuStrategy2 implements IStrategy{
 			states[point.getX()][point.getY()] = State.HIT;
 			currentVictim.add((Point) point);
 			surroundCorpse(currentVictim);
-			 fleet.put(currentVictim.size(), (fleet.get(currentVictim.size())
-			 - 1));
-			 
-			 if (! killedFleet.containsKey(currentVictim.size())) {
-				 killedFleet.put(currentVictim.size(), 1);
-			 }
-			 else {
-				 killedFleet.put(currentVictim.size(), 
-						 killedFleet.get(currentVictim.size()) + 1);
-				 
-			 }
- 
-//			System.out.println("killed! " + currentVictim);
+			fleet.put(currentVictim.size(),
+					(fleet.get(currentVictim.size()) - 1));
+
+			if (!killedFleet.containsKey(currentVictim.size())) {
+				killedFleet.put(currentVictim.size(), 1);
+			} else {
+				killedFleet.put(currentVictim.size(),
+						killedFleet.get(currentVictim.size()) + 1);
+
+			}
+
+			// System.out.println("killed! " + currentVictim);
 
 			currentVictim = new ArrayList<Point>();
 
@@ -225,11 +225,11 @@ public class XuStrategy2 implements IStrategy{
 		}
 		case HIT: {
 			currentVictim.add((Point) point);
-//			System.out.println("hit! " + currentVictim);
+			// System.out.println("hit! " + currentVictim);
 			break;
 		}
 		default: {
-//			System.out.println("miss! " + currentVictim);
+			// System.out.println("miss! " + currentVictim);
 		}
 		}
 	}
@@ -264,8 +264,8 @@ public class XuStrategy2 implements IStrategy{
 		if (x < 0 || y < 0 || x >= GameDescription.XMAX
 				|| y >= GameDescription.YMAX) {
 			// return;
-			throw new IllegalArgumentException(
-					"try to shoot out of field: " + x + ", " + y);
+			throw new IllegalArgumentException("try to shoot out of field: "
+					+ x + ", " + y);
 		}
 		states[x][y] = st;
 
@@ -275,7 +275,7 @@ public class XuStrategy2 implements IStrategy{
 		int count = 0;
 		for (int i = 0; i < states.length; i++) {
 			for (int j = 0; j < states[0].length; j++) {
-				if (states[i][j] != State.EMPTY){
+				if (states[i][j] != State.EMPTY) {
 					count++;
 				}
 			}

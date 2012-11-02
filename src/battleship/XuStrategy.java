@@ -186,7 +186,7 @@ public class XuStrategy implements IStrategy {
 			// fleet.put(currentVictim.size(), (fleet.get(currentVictim.size())
 			// - 1));
 
-//			System.out.println("killed! " + currentVictim);
+			// System.out.println("killed! " + currentVictim);
 
 			currentVictim = new ArrayList<Point>();
 
@@ -194,11 +194,11 @@ public class XuStrategy implements IStrategy {
 		}
 		case HIT: {
 			currentVictim.add((Point) point);
-//			System.out.println("hit! " + currentVictim);
+			// System.out.println("hit! " + currentVictim);
 			break;
 		}
 		default: {
-//			System.out.println("miss! " + currentVictim);
+			// System.out.println("miss! " + currentVictim);
 		}
 		}
 	}
@@ -233,8 +233,8 @@ public class XuStrategy implements IStrategy {
 		if (x < 0 || y < 0 || x >= GameDescription.XMAX
 				|| y >= GameDescription.YMAX) {
 			// return;
-			throw new IllegalArgumentException(
-					"try to shoot out of field: " + x + ", " + y);
+			throw new IllegalArgumentException("try to shoot out of field: "
+					+ x + ", " + y);
 		}
 		states[x][y] = st;
 
