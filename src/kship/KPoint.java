@@ -3,7 +3,22 @@ package kship;
 import model.IPoint;
 
 class KPoint implements IPoint {
-	public KPoint(int x, int y) {
+
+	static KPoint[][] cache = new KPoint[20][20];	
+	static {
+		for (int x = -5; x < 15; ++x) {
+			for (int y = -5; y < 15; ++y) {
+				cache[x + 5][y + 5] = new KPoint(x, y);
+			}
+		}
+	}
+	
+	public static KPoint getInstance(int x, int y) {
+		return cache[x + 5][y + 5];
+	}
+	
+	
+	private KPoint(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -26,11 +41,11 @@ class KPoint implements IPoint {
 	}
 	
 	KPoint move(int dx, int dy) {
-		return new KPoint(x + dx, y + dy);
+		return getInstance(x + dx, y + dy);
 	}	
 	
 	KPoint random(KPoint end) {
-		return new KPoint(
+		return getInstance(
 			(int)(x + (end.x - x)*Math.random()),
 			(int)(y + (end.y - y)*Math.random()));
 	}

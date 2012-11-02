@@ -9,7 +9,7 @@ import model.IShipDescription;
 class KShipDescription implements IShipDescription {
 	
 	public KShipDescription() {
-		pos = new KPoint(0, 0);
+		pos = KPoint.getInstance(0, 0);
 	}
 	
 	KPoint pos;

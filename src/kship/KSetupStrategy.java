@@ -36,7 +36,7 @@ abstract class AbstractSS implements ISetupStrategy {
 	}
 	
 	boolean isFree(IPoint ipos) {
-		KPoint pos = new KPoint(ipos.getX(), ipos.getY());
+		KPoint pos = KPoint.getInstance(ipos.getX(), ipos.getY());
 		
 		if (!KHelper.isInField(pos)) {
 			return false;
@@ -113,7 +113,7 @@ class BoundSS extends AbstractSS {
 			do {
 				int x = (int)(random()*GameDescription.XMAX);
 				int y = (int)(random()*GameDescription.YMAX);				
-				sd.pos = new KPoint(x, y);
+				sd.pos = KPoint.getInstance(x, y);
 				sd.dir = KDirection.random();				
 			} while(!tryPlace(sd));
 			res.add(sd);

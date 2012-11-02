@@ -4,8 +4,8 @@ import model.IPoint;
 import battleship.GameDescription;
 
 class KHelper {
-	static final KPoint p0 = new KPoint(0, 0);
-	static final KPoint pMax = new KPoint(GameDescription.XMAX, GameDescription.YMAX);
+	static final KPoint p0 = KPoint.getInstance(0, 0);
+	static final KPoint pMax = KPoint.getInstance(GameDescription.XMAX, GameDescription.YMAX);
 	
 	static void printField(Object[][] field) { 
 		for (Object[] line : field) {

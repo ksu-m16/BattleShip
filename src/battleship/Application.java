@@ -16,18 +16,30 @@ public class Application {
 	private IStrategy str2;
 	
 	
-	private int ngames = 100;
+	private int ngames = 1000;
 
 	private int firstPlayerWins = 0;
 	private int winner;
+	
+	private int player1Millis = 0;
+	public int getPlayer1Millis() {
+		return player1Millis;
+	}
+	private int player2Millis = 0;
+	public int getPlayer2Millis() {
+		return player2Millis;
+	}
 
 	public void startChampionship() {
 		
 		long tm = System.currentTimeMillis();
 		
+		player1Millis = 0;
+		player2Millis = 0;
+		firstPlayerWins = 0;
 		for (int i = 0; i < ngames; i++) {
 			init();
-			play();
+			play();			
 		}
 		System.out.println(ngames + " games played.");
 		System.out.println("Player 1 wins " + firstPlayerWins + " times.");
@@ -44,6 +56,7 @@ public class Application {
 		}
 		
 		System.out.println(System.currentTimeMillis() - tm + " ms");
+		System.out.println("player1 took: " + player1Millis + " ms, player2 took: " + player2Millis);
 		
 	}
 
@@ -51,21 +64,24 @@ public class Application {
 		sc = new SetupController();
 		gc = new GameController();
 
-		// setup fields
-//		ss1 = new SetupStrategy();
-//		ss2 = new KSetupStrategy();
-		
-		ss2 = new SetupStrategy();
+		// setup fields		
 		ss1 = new KSetupStrategy();
+		ss2 = new SetupStrategy();
 		
 		sc.setSetupStrategy(ss1);
+		
+		long time = System.currentTimeMillis();
 		f1 = sc.setup();
+		player1Millis += System.currentTimeMillis() - time;		
+		
 		sc.setSetupStrategy(ss2);
+		
+		time = System.currentTimeMillis();		
 		f2 = sc.setup();
+		player2Millis += System.currentTimeMillis() - time;
 
 		// setup gamecontroller
-
-		str1 = new KGameStategy(1., 2., 3.);
+		str1 = new KGameStategy(1., 5., 10.);
 		str2 = new XuStrategy4();
 
 		gc.setPlayer1Strategy(str1);
@@ -87,9 +103,18 @@ public class Application {
 		if (f1 == null || f2 == null) {
 			return;
 		}
-		
-		
-		while (gc.next()) {
+			
+		boolean res = true;
+		while (res) {			
+			int player = gc.getCurrentPlayer();
+			res = gc.next(); 
+			long millis = gc.getLastMillis();
+			
+			if (player == 0) {
+				player1Millis += millis;
+			} else {
+				player2Millis += millis;
+			}
 		}
 
 		if (gc.getWinner() == 0) {

@@ -1,8 +1,6 @@
 package kship;
 
-import java.awt.Point;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import model.IPoint;
@@ -133,7 +131,7 @@ public class KGameStategy implements IStrategy{
 		
 		for (int x = 0; x < GameDescription.XMAX; ++x) {
 			for (int y = 0; y < GameDescription.YMAX; ++y) {
-				sd.pos = new KPoint(x, y);
+				sd.pos = KPoint.getInstance(x, y);
 				for (KDirection d : KDirection.all) {
 					sd.dir = d;
 					if (!updateVariantsForShip(sd)) {
@@ -154,7 +152,7 @@ public class KGameStategy implements IStrategy{
 		//Add one more point around hit states
 		for (int x = 0; x < GameDescription.XMAX; ++x) {
 			for (int y = 0; y < GameDescription.YMAX; ++y) {
-				KPoint p = new KPoint(x, y);
+				KPoint p = KPoint.getInstance(x, y);
 				if (getState(p) == FState.VALID) {
 					variants[p.x][p.y] += fempty;
 				}
@@ -199,7 +197,7 @@ public class KGameStategy implements IStrategy{
 				if (variants[x][y] < maxV) {
 					continue;
 				}
-				res = new KPoint(x, y);
+				res = KPoint.getInstance(x, y);
 				maxV = variants[x][y];				
 			}
 		}
@@ -300,7 +298,7 @@ public class KGameStategy implements IStrategy{
 			throw new IllegalStateException("Had won a game!");
 		}
 				
-		KPoint p = new KPoint(point.getX(), point.getY());
+		KPoint p = KPoint.getInstance(point.getX(), point.getY());
 		
 		switch (state) {			
 			case HIT:

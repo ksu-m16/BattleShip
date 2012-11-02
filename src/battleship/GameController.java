@@ -30,13 +30,24 @@ public class GameController {
 		models[1] = m;
 	}
 
-	public boolean next() {
-
+	long lastMillis = 0;
+	public long getLastMillis() {
+		return lastMillis;
+	}
+	
+	public int getCurrentPlayer() {
+		return current;
+	}
+	
+	public boolean next() {		
 		IStrategy s = strategies[current];
+		
+		long time = System.currentTimeMillis();
 		IPoint p = s.move();
 //		 System.out.println("Player " + (current + 1) + " move " + p);
 		State result = models[(current + 1) % 2].attack(p.getX(), p.getY());
 		s.update(p, result);
+		lastMillis = System.currentTimeMillis() - time;
 
 		if (result == State.MISS) {
 			current = (current + 1) % 2;

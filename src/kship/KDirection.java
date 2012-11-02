@@ -4,7 +4,7 @@ enum KDirection {
 	LEFT(-1, 0), UP(0, -1), RIGHT(1, 0), DOWN(0, 1);
 	
 	KDirection(int dx, int dy) {
-		delta = new KPoint(dx, dy);
+		delta = KPoint.getInstance(dx, dy);
 	}
 	
 	static final KDirection[] all = {LEFT, UP, RIGHT, DOWN}; 

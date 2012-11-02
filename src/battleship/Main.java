@@ -2,6 +2,7 @@ package battleship;
 
 public class Main {
 
+	public static final int roundsCount = 1;
 	/**
 	 * @param args
 	 */
@@ -10,8 +11,9 @@ public class Main {
 		// app.init();
 		
 
-		app.startChampionship();
-		
+		for (int i = 0; i < roundsCount; ++i) {
+			app.startChampionship();
+		}				
 		
 	}
 
