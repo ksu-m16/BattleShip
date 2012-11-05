@@ -66,7 +66,7 @@ public class Application {
 
 		// setup fields		
 		ss1 = new KSetupStrategy();
-		ss2 = new SetupStrategy();
+		ss2 = new XuSetupStrategy2();
 		
 		sc.setSetupStrategy(ss1);
 		

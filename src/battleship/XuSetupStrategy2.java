@@ -50,7 +50,7 @@ public class XuSetupStrategy2 implements ISetupStrategy {
 
 				if (course == Course.VERTICAL) {
 					x = r.nextInt(field.length);
-					y = r.nextInt(field[0].length - shipSize + 1);
+					y = r.nextInt(42) < 21 ? 0 : (field[0].length - shipSize);
 				}
 
 				IShipDescription s = new ShipDescription(new Point(x, y),
@@ -63,8 +63,8 @@ public class XuSetupStrategy2 implements ISetupStrategy {
 					// s.getPosition().size());
 					placeShip(s);
 					makePerimeter(s);
-					// printField();
-					// System.out.println("-----------------");
+//					 printField();
+//					 System.out.println("-----------------");
 				}
 
 			}
