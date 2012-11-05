@@ -305,7 +305,7 @@ public class KSetupStrategy implements ISetupStrategy {
 	}
 	
 	static double[] selectStats = {0., 0., 0., 0.};
-	static double[] stats = {10., 10., 10., 40.};
+	static double[] stats = {10., 10., 10., 400.};
 	static double count = 0;
 	static {
 		for (double d : stats) {
