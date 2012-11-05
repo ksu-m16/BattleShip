@@ -3,7 +3,7 @@ package kship;
 import model.IPoint;
 import battleship.GameDescription;
 
-class KHelper {
+public class KHelper {
 	static final KPoint p0 = KPoint.getInstance(0, 0);
 	static final KPoint pMax = KPoint.getInstance(GameDescription.XMAX, GameDescription.YMAX);
 	
@@ -16,7 +16,7 @@ class KHelper {
 		}
 	}
 	
-	static void printField(double[][] field, double factor) {
+	public static void printField(double[][] field, double factor) {
 		for (double[] line : field) {
 			for(double cell : line) {
 				System.out.print(String.format("%02.02f ", cell * factor));				

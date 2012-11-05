@@ -3,9 +3,14 @@ package kship;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import model.IPoint;
 import model.IShipDescription;
+import model.ShipDescription;
 import battleship.GameDescription;
 import battleship.ISetupStrategy;
 
@@ -56,18 +61,27 @@ abstract class AbstractSS implements ISetupStrategy {
 		return true;
 	}
 	
-	boolean tryPlace(KShipDescription sd) {
+	boolean testPlace(KShipDescription sd) {
 		List<IPoint> pos = sd.getPosition();
 		for (IPoint p : pos) {
 			if (!isFree(p)) {
 				return false;
 			}
 		}
+		return true;
+	}
+	
+	boolean tryPlace(KShipDescription sd) {
+		if (!testPlace(sd)) {
+			return false;
+		}
+		
+		List<IPoint> pos = sd.getPosition();		
 		for (IPoint p : pos) {			
 			field[p.getX()][p.getY()] = State.SET;
 		}
 		return true;
-	}	
+	}
 }
 
 class RandomSS extends AbstractSS {
@@ -90,6 +104,11 @@ class RandomSS extends AbstractSS {
 		}		
 		return res;		
 	}	
+	
+	@Override
+	public String toString() {	
+		return "random";
+	}
 }
 
 class BoundSS extends AbstractSS {			
@@ -97,7 +116,7 @@ class BoundSS extends AbstractSS {
 	
 	public double random() {
 		double r = Math.pow(Math.random(), factor);
-		return (Math.random() < 0.5)?r:1-r;
+		return (Math.random() < 0.5)?r:0.999999999-r;
 	}
 	
 	@Override
@@ -120,6 +139,11 @@ class BoundSS extends AbstractSS {
 		}		
 		return res;		
 	}		
+	
+	@Override
+	public String toString() {	
+		return "bound";
+	}
 }
 
 class DirectionSS extends AbstractSS {			
@@ -148,23 +172,164 @@ class DirectionSS extends AbstractSS {
 		}		
 		return res;		
 	}		
+	
+	@Override
+	public String toString() {
+		return "direction";
+	}
+}
+
+class CompactSS extends AbstractSS {
+	
+	enum SState {SET, FREE};
+	SState sfield[][] = new SState[GameDescription.XMAX][GameDescription.YMAX];
+	
+	SState getSState(KPoint p) {
+		if (!KHelper.isInField(p)) {
+			return SState.SET;			
+		}
+		return sfield[p.x][p.y];
+	}
+	
+	void setSState(KPoint p, SState s) {
+		if (!KHelper.isInField(p)) {
+			return;
+		}
+		sfield[p.x][p.y] = s;
+	}
+	
+	Set<KPoint> getBorder(KShipDescription sd) {
+		Set<KPoint> b = new TreeSet<KPoint>();
+		KPoint[] pos = sd.getPositionArray();
+		for (KPoint p : pos) {
+			for (int x = -1; x <= 1; ++x) {
+				for (int y = -1; y <= 1; ++y) {
+					b.add(p.move(x, y));
+				}
+			}
+		}
+		
+		for (KPoint p : pos) {
+			b.remove(p);
+		}
+		
+		return b;
+	}
+	
+	List<KShipDescription> getVariants(int size) {
+		
+		int freeCnt = 15;
+		List<KShipDescription> variants = new LinkedList<KShipDescription>();
+		
+		for (int x = 0; x < GameDescription.XMAX; ++x) {
+			for (int y = 0; y < GameDescription.YMAX; ++y) {
+				for (KDirection d : KDirection.all) {
+					KShipDescription sd = new KShipDescription();
+					sd.pos = KPoint.getInstance(x, y);
+					sd.size = size;						
+					sd.dir = d;
+					
+					if (!testPlace(sd)) {
+						continue;
+					}
+
+					int curFreeCnt = 0;
+					Set<KPoint> border = getBorder(sd);
+					for (KPoint p : border) {
+						if (getSState(p) == SState.FREE) {
+							curFreeCnt++;
+						}
+					}
+					
+					if (curFreeCnt > freeCnt) {
+						continue;
+					}
+					
+					if (curFreeCnt < freeCnt) {
+						freeCnt = curFreeCnt;
+						variants.clear();
+					}
+					
+					variants.add(sd);
+				}
+			}					
+		}	
+		return variants;
+	}
+	
+	void markSet(KShipDescription sd) {
+		KPoint[] pos = sd.getPositionArray();
+		for (KPoint p : pos) {
+			for (int x = -1; x <= 1; ++x) {
+				for (int y = -1; y <= 1; ++y) {
+					setSState(p.move(x, y), SState.SET);					
+				}
+			}
+		}	
+	}
+	
+	@Override
+	void clear() {
+		super.clear();
+		for (SState[] line: sfield) {
+			Arrays.fill(line, SState.FREE);
+		}		
+	}
+	
+	public List<IShipDescription> getShips() {
+		
+		clear();
+			
+		List<IShipDescription> res = new LinkedList<IShipDescription>();
+		for (int size : sizes) {
+			List<KShipDescription> variants = getVariants(size);
+			KShipDescription sd = variants.get((int)(variants.size() * Math.random()));
+			tryPlace(sd);
+			markSet(sd);
+			res.add(sd);			
+		}
+		
+		return res;
+	}
+	
+	@Override
+	public String toString() {	
+		return "compact";
+	}
 }
 
 public class KSetupStrategy implements ISetupStrategy {
 	
-	static double[] selectStats = {0., 0., 0.};
-	static double[] stats = {10.,10.,10.};
-	static int count = 30;
+	public static ISetupStrategy getInstance(String name) {
+		return strategyMap.get(name);
+	}
+	
+	static double[] selectStats = {0., 0., 0., 0.};
+	static double[] stats = {10., 10., 10., 40.};
+	static double count = 0;
+	static {
+		for (double d : stats) {
+			count += d;
+		}
+	}
+	
 	static int current;
 	
-	static ISetupStrategy[] strategies = { new RandomSS(), new BoundSS(), new DirectionSS() };
+	static ISetupStrategy[] strategies = { new RandomSS(), new BoundSS(), new DirectionSS(), new CompactSS() };
 	
+	static Map<String, ISetupStrategy> strategyMap = new TreeMap<String, ISetupStrategy>();
+	static {
+		for (ISetupStrategy s : strategies) {
+			strategyMap.put(s.toString(), s);
+		}
+	}
+
 	static void winner() {
 		stats[current]++;
 		count++;		
 	}
 	
-	static void print() {		
+	public static void print() {		
 		System.out.println(Arrays.toString(stats));
 		System.out.println(Arrays.toString(selectStats));
 	}
@@ -188,9 +353,11 @@ public class KSetupStrategy implements ISetupStrategy {
 	}	
 
 	public static void main(String[] args) {
+		
+		CompactSS css = new CompactSS();		
 		StatsField sf = new StatsField();	
-		for (int i = 0; i < 1024*128; ++i) {
-			List<IShipDescription> ships = new KSetupStrategy().getShips();
+		for (int i = 0; i < 1024; ++i) {
+			List<IShipDescription> ships = css.getShips();
 			for (IShipDescription ship : ships) {
 				List<IPoint> pos = ship.getPosition();
 				for (IPoint p : pos) {
@@ -198,6 +365,7 @@ public class KSetupStrategy implements ISetupStrategy {
 				}
 			}
 		}
+		sf.print();
 	}
 }
 

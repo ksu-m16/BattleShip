@@ -46,36 +46,36 @@ public class KGameStategy implements IStrategy{
 	};
 
 	static StatsField sf = new StatsField();
-	FState[][] field = new FState[GameDescription.XMAX][GameDescription.YMAX];
+        
+        
+        public static final int MAXSHIP = 4;
+	FState[][] field = new FState[GameDescription.XMAX + MAXSHIP*2][GameDescription.YMAX + MAXSHIP*2];
 	int[] shipsLeft = {4, 3, 2, 1};
+		
+	double fNear;
+	double fHit;
 	
-	double fempty;
-	double fnear;
-	double finner;
-	
-	public KGameStategy(double fempty, double fnear, double finner) {
-		this.fempty = fempty;
-		this.fnear = fnear;
-		this.finner = finner;
+	public KGameStategy(double fNear, double fHit) {		
+		this.fNear = fNear;
+		this.fHit = fHit;
 		
 		for (FState[] line : field) {
-			Arrays.fill(line, FState.VALID);
+			Arrays.fill(line, FState.IGNORE);
 		}
+        for (int x = 0; x < GameDescription.XMAX; ++x) {
+            for (int y = 0; y < GameDescription.YMAX; ++y) {
+                setState(KPoint.getInstance(x, y), FState.VALID);
+            }
+        }
 	}
 	
 	
 	FState getState(IPoint p) {
-		if (!KHelper.isInField(p)) {
-			return FState.IGNORE;
-		}		
-		return field[p.getX()][p.getY()];
+		return field[p.getX() + MAXSHIP][p.getY() + MAXSHIP];
 	}
 	
 	void setState(KPoint p, FState s) {
-		if (!KHelper.isInField(p)) {
-			return;
-		}
-		field[p.x][p.y] = s;
+		field[p.x + MAXSHIP][p.y + MAXSHIP] = s;
 	}
 
 	double[][] variants;
@@ -85,16 +85,16 @@ public class KGameStategy implements IStrategy{
 	}
 	
 	boolean updateVariantsForShip(KShipDescription sd) {
-		List<IPoint> pos = sd.getPosition();
+		IPoint[] pos = sd.getPositionArray();
 		
-		if (getState(sd.getStart().next(sd.dir, - 1)) == FState.HIT) {
+		if (getState(sd.getStart().next(sd.dir, -1)) == FState.HIT) {
 			return false;
 		}
 		
 		if (getState(sd.getEnd().next(sd.dir, 1)) == FState.HIT) {
 			return false;
 		}		
-		
+                
 		int hitCount = 0;
 		boolean hasValid = false;
 		for (IPoint p : pos) {
@@ -111,16 +111,17 @@ public class KGameStategy implements IStrategy{
 					break;
 			}
 		}
+                
 		if (!hasValid) {
-			return false;
-		}
-		
+			return false;		
+        }
+		                
 		int count = getLeftCount(sd.getSize());
 		for (IPoint p : pos) {
 			if (getState(p) == FState.VALID) {
-				variants[p.getX()][p.getY()] += count + hitCount * finner;
+				variants[p.getX()][p.getY()] += count + hitCount * fHit;
 			}
-		}
+		}                
 		return true;
 	}
 			
@@ -132,7 +133,7 @@ public class KGameStategy implements IStrategy{
 		for (int x = 0; x < GameDescription.XMAX; ++x) {
 			for (int y = 0; y < GameDescription.YMAX; ++y) {
 				sd.pos = KPoint.getInstance(x, y);
-				for (KDirection d : KDirection.all) {
+				for (KDirection d : KDirection.half) {
 					sd.dir = d;
 					if (!updateVariantsForShip(sd)) {
 						continue;
@@ -144,29 +145,28 @@ public class KGameStategy implements IStrategy{
 		return false;
 	}	
 	
-	KShipDescription targetShip;
 	void buildVariants() {
 		variants = new double[GameDescription.XMAX][GameDescription.YMAX];
 		
 		//Add one point for all valid states
-		//Add one more point around hit states
+		//Add fNear points around hit states		
 		for (int x = 0; x < GameDescription.XMAX; ++x) {
 			for (int y = 0; y < GameDescription.YMAX; ++y) {
 				KPoint p = KPoint.getInstance(x, y);
 				if (getState(p) == FState.VALID) {
-					variants[p.x][p.y] += fempty;
+					variants[p.x][p.y] += 1.;
 				}
 				if (getState(p) == FState.HIT) {
 					for (KDirection d : KDirection.all) {						
 						KPoint pd = p.next(d);
 						if (getState(pd) == FState.VALID) {
-							variants[pd.x][pd.y] += fnear;
+							variants[pd.x][pd.y] += fNear;
 						}
 					}
 				}
 			}
 		}
-		
+				
 		//Search for possible ships in all kinds of position 
 		for (int s = 1; s < 4; ++s) {
 			KShipDescription sd = new KShipDescription();
@@ -187,6 +187,7 @@ public class KGameStategy implements IStrategy{
 	
 	@Override
 	public IPoint move() {
+		
 		buildVariants();
 
 		//Select list of most probable positions from field		
@@ -297,6 +298,8 @@ public class KGameStategy implements IStrategy{
 		if (win) {
 			throw new IllegalStateException("Had won a game!");
 		}
+		
+		KTimer.start("update");
 				
 		KPoint p = KPoint.getInstance(point.getX(), point.getY());
 		
@@ -320,5 +323,7 @@ public class KGameStategy implements IStrategy{
 			win = true;				
 			KSetupStrategy.winner();			
 		}
+		
+		KTimer.stop("update");
 	}
 }

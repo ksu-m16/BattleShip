@@ -1,6 +1,7 @@
 package battleship;
 
 import kship.KGameStategy;
+import kship.KHelper;
 import kship.KSetupStrategy;
 import model.IFieldModel;
 
@@ -45,7 +46,7 @@ public class Application {
 		System.out.println("Player 1 wins " + firstPlayerWins + " times.");
 		System.out.println("Player 2 wins " + (ngames - firstPlayerWins)
 				+ " times.");
-
+		
 		if (firstPlayerWins == (ngames - firstPlayerWins)) {
 			System.out.println("Friendship wins!");
 		}
@@ -56,10 +57,9 @@ public class Application {
 		}
 		
 		System.out.println(System.currentTimeMillis() - tm + " ms");
-		System.out.println("player1 took: " + player1Millis + " ms, player2 took: " + player2Millis);
-		
+		System.out.println("player1 took: " + player1Millis + " ms, player2 took: " + player2Millis);	
 	}
-
+	
 	public void init() {
 		sc = new SetupController();
 		gc = new GameController();
@@ -80,8 +80,8 @@ public class Application {
 		f2 = sc.setup();
 		player2Millis += System.currentTimeMillis() - time;
 
-		// setup gamecontroller
-		str1 = new KGameStategy(1., 5., 10.);
+		// setup game controller
+		str1 = new KGameStategy(12., 8.);
 		str2 = new XuStrategy4();
 
 		gc.setPlayer1Strategy(str1);

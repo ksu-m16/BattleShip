@@ -2,7 +2,7 @@ package kship;
 
 import model.IPoint;
 
-class KPoint implements IPoint {
+class KPoint implements IPoint, Comparable<KPoint> {
 
 	static KPoint[][] cache = new KPoint[20][20];	
 	static {
@@ -61,5 +61,20 @@ class KPoint implements IPoint {
 	@Override
 	public String toString() {	
 		return x + ":" + y;
+	}
+
+	@Override
+	public int compareTo(KPoint o) {		
+		int cmp = x - o.x;
+		return (cmp != 0)?cmp:(y - o.y);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof KPoint) {
+			KPoint p = (KPoint)obj;
+			return (p.x == x) && (p.y == y);
+		}		
+		return super.equals(obj);
 	}
 }

@@ -1,8 +1,11 @@
 package battleship;
 
+import kship.KSetupStrategy;
+import kship.KTimer;
+
 public class Main {
 
-	public static final int roundsCount = 1;
+	public static final int roundsCount = 400;
 	/**
 	 * @param args
 	 */
@@ -13,7 +16,9 @@ public class Main {
 
 		for (int i = 0; i < roundsCount; ++i) {
 			app.startChampionship();
-		}				
+		}
+		
+		KSetupStrategy.print();
 		
 	}
 

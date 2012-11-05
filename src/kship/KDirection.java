@@ -1,13 +1,21 @@
 package kship;
 
 enum KDirection {
-	LEFT(-1, 0), UP(0, -1), RIGHT(1, 0), DOWN(0, 1);
+	LEFT(-1, 0, 0), UP(0, -1, 1), RIGHT(1, 0, 2), DOWN(0, 1, 3);
 	
-	KDirection(int dx, int dy) {
+	KDirection(int dx, int dy, int idx) {
 		delta = KPoint.getInstance(dx, dy);
+		index = idx;
 	}
 	
-	static final KDirection[] all = {LEFT, UP, RIGHT, DOWN}; 
+	
+	public final int index;	
+	static final KDirection[] all = {LEFT, UP, RIGHT, DOWN};
+        static final KDirection[] half = {LEFT, UP};
+	
+	static KDirection fromIndex(int index) {
+		return all[index];
+	}
 	
 	static KDirection random() {
 		double r = Math.random();
