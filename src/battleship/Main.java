@@ -5,7 +5,7 @@ import kship.KTimer;
 
 public class Main {
 
-	public static final int roundsCount = 10;
+	public static final int roundsCount = 1;
 	/**
 	 * @param args
 	 */

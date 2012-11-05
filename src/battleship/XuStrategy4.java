@@ -385,4 +385,13 @@ public class XuStrategy4 implements IStrategy {
 		return count;
 	}
 
+//	public void printField() {
+//		for (int j = 0; j < states.length; j++) {
+//			for (int i = 0; i < states.length; i++) {
+//				System.out.print(states[i][j]);
+//			}
+//			System.out.println();
+//		}
+//	}
+	
 }

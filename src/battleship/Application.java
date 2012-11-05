@@ -82,7 +82,8 @@ public class Application {
 
 		// setup game controller
 		str1 = new KGameStategy(12., 8.);
-		str2 = new XuStrategy4();
+		str2 = new XuStrategy5();
+
 
 		gc.setPlayer1Strategy(str1);
 		gc.setPlayer2Strategy(str2);
@@ -121,11 +122,11 @@ public class Application {
 			firstPlayerWins++;
 		}
 
-		// System.out.println();
-		// System.out.println("player 1 field");
-		// f1.printField();
-		// System.out.println();
-		// System.out.println("player 2 field");
-		// f2.printField();
+//		 System.out.println();
+//		 System.out.println("player 1 field");
+//		 f1.printField();
+//		 System.out.println();
+//		 System.out.println("player 2 field");
+//		 f2.printField();
 	}
 }
